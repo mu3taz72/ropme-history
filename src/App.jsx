@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 
 const TEMPLATE_INFO = {
-  title: "منصة تاريخ وإحصائيات المنطقة البحرية للمنظمة (ROPME)",
+  title: " تاريخ وإحصائيات المنظمة الاقليمية لحماية البيئة البحرية (ROPME)",
   subtitle: "أرشيف تفاعلي ومركز رصد حي لجودة البيئة البحرية ونظم المعلومات الجغرافية",
   yearsRange: "1978 - 2026",
 };
