@@ -7,10 +7,10 @@ const TEMPLATE_INFO = {
 };
 
 const CATEGORIES = [
-  { id: 'الكل', name: 'جميع المجالات', color: 'bg-slate-600', textColor: 'text-slate-500' },
+  { id: 'الكل', name: 'جميع المجالات', color: 'bg-emerald-800', textColor: 'text-emerald-800' },
   { id: 'legal', name: 'اتفاقيات وبروتوكولات قانونية', color: 'bg-teal-800 border-teal-700', textColor: 'text-teal-700', borderColor: 'border-teal-700' },
   { id: 'env', name: 'بعثات وحملات بيئية', color: 'bg-cyan-800 border-cyan-700', textColor: 'text-cyan-700', borderColor: 'border-cyan-700' },
-  { id: 'admin', name: 'مؤتمرة وقرارات إدارية', color: 'bg-emerald-800 border-emerald-700', textColor: 'text-emerald-700', borderColor: 'border-emerald-700' },
+  { id: 'admin', name: 'مؤتمرات وقرارات إدارية', color: 'bg-emerald-800 border-emerald-700', textColor: 'text-emerald-700', borderColor: 'border-emerald-700' },
 ];
 
 const ERAS = [
@@ -77,7 +77,6 @@ const TIMELINE_EVENTS = [
   }
 ];
 
-// روابط الصور الرسمية المباشرة والمطابقة بنسبة 100% لخادم بوابة الـ ROPME المرفقة سابقاً
 const GALLERY_IMAGES = [
   { 
     id: 1, 
@@ -106,7 +105,7 @@ export default function App() {
   const [selectedEra, setSelectedEra] = useState('الكل');
   const [viewMode, setViewMode] = useState('grid');
   
-  // تفعيل نظام السّمات التبادلي التراثي (Sepia / Dark) المأخوذ من ملف البوستر
+  // الاحتفاظ بالسمة التبادلية مع تحديث الألوان التناغمية الجديدة
   const [themeMode, setThemeMode] = useState('sepia');
 
   const [metrics, setMetrics] = useState({
@@ -150,65 +149,65 @@ export default function App() {
     }).sort((a, b) => a.year - b.year);
   }, [searchTerm, selectedCategory, selectedEra]);
 
-  // إعداد مصفوفات ألوان الفئات الحركية بناء على السمة المختارة
+  // تعديل درجات الألوان للـ Sepia لتعتمد على الأخضر الزمردي الداكن بدلاً من البني (بند 3)
   const bgThemeClass = themeMode === 'sepia' 
-    ? 'bg-[#f8f1e5] text-[#3e2723] selection:bg-amber-800 selection:text-amber-50' 
+    ? 'bg-[#f5efe4] text-[#1e3f20] selection:bg-emerald-800 selection:text-emerald-50' 
     : 'bg-slate-950 text-slate-100 selection:bg-amber-500 selection:text-slate-950';
 
   const cardThemeClass = themeMode === 'sepia'
-    ? 'bg-[#f1e6d2] border-[#dac9ad] hover:border-amber-800/80'
+    ? 'bg-[#e2dacb] border-[#cbd4c5] hover:border-emerald-800/80'
     : 'bg-slate-900 border-slate-800 hover:border-amber-400/80';
 
   const inputThemeClass = themeMode === 'sepia'
-    ? 'bg-[#fcf8f0] border-[#cfbe9f] text-[#3e2723] placeholder-[#8d6e63] focus:border-amber-800'
+    ? 'bg-[#fcfaf5] border-[#b8c4b1] text-[#1e3f20] placeholder-[#556b2f] focus:border-emerald-800'
     : 'bg-slate-950 border-slate-800 text-slate-100 placeholder-slate-500 focus:border-amber-500';
 
   return (
     <div dir="rtl" className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${bgThemeClass}`}>
       
-      {/* الرأس المحاكي لستايل البوستر الأكاديمي */}
-      <header className={`border-b backdrop-blur-md sticky top-0 z-40 px-4 py-3 md:px-8 transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cfbe9f] bg-[#f8f1e5]/90' : 'border-slate-800 bg-slate-900/85'}`}>
+      {/* الرأس المحاكي لستايل البوستر الأكاديمي بالألوان الجديدة */}
+      <header className={`border-b backdrop-blur-md sticky top-0 z-40 px-4 py-3 md:px-8 transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cbd4c5] bg-[#f5efe4]/90' : 'border-slate-800 bg-slate-900/85'}`}>
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
           <div>
-            <h1 className={`text-xl md:text-2xl font-black tracking-tight ${themeMode === 'sepia' ? 'text-amber-950' : 'text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-emerald-400'}`}>
+            <h1 className={`text-xl md:text-2xl font-black tracking-tight ${themeMode === 'sepia' ? 'text-emerald-950' : 'text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-emerald-400'}`}>
               {TEMPLATE_INFO.title}
             </h1>
-            <p className={`text-xs mt-1 ${themeMode === 'sepia' ? 'text-[#6d4c41]' : 'text-slate-400'}`}>
+            <p className={`text-xs mt-1 ${themeMode === 'sepia' ? 'text-[#4f6f52]' : 'text-slate-400'}`}>
               {TEMPLATE_INFO.subtitle} ({TEMPLATE_INFO.yearsRange})
             </p>
           </div>
 
-          <nav className={`flex flex-wrap justify-center items-center gap-1.5 p-1.5 rounded-xl border ${themeMode === 'sepia' ? 'bg-[#ebdcb9] border-[#cfbe9f]' : 'bg-slate-950 border-slate-800'}`}>
-            <button onClick={() => setActiveTab('timeline')} className={`px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'timeline' ? 'bg-amber-800 text-white shadow-md' : 'text-slate-500'}`}>الأرشيف والخط الزمني</button>
-            <button onClick={() => setActiveTab('atlas')} className={`px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'atlas' ? 'bg-amber-800 text-white shadow-md' : 'text-slate-500'}`}>أطلس النظم الجغرافية (GIS)</button>
+          <nav className={`flex flex-wrap justify-center items-center gap-1.5 p-1.5 rounded-xl border ${themeMode === 'sepia' ? 'bg-[#d0c9bc] border-[#cbd4c5]' : 'bg-slate-950 border-slate-800'}`}>
+            <button onClick={() => setActiveTab('timeline')} className={`px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'timeline' ? 'bg-emerald-800 text-white shadow-md' : 'text-slate-600'}`}>الأرشيف والخط الزمني</button>
+            <button onClick={() => setActiveTab('atlas')} className={`px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'atlas' ? 'bg-emerald-800 text-white shadow-md' : 'text-slate-600'}`}>أطلس النظم الجغرافية (GIS)</button>
           </nav>
 
-          <button onClick={() => setThemeMode(themeMode === 'sepia' ? 'dark' : 'sepia')} className={`px-3 py-1.5 rounded-lg text-xs font-black border transition-all ${themeMode === 'sepia' ? 'bg-slate-900 border-slate-800 text-amber-400' : 'bg-[#f1e6d2] border-[#cfbe9f] text-amber-900'}`}>
-            {themeMode === 'sepia' ? '✨ النمط الداكن الحديث' : '📜 مظهر البوستر الورقي'}
+          <button onClick={() => setThemeMode(themeMode === 'sepia' ? 'dark' : 'sepia')} className={`px-3 py-1.5 rounded-lg text-xs font-black border transition-all ${themeMode === 'sepia' ? 'bg-slate-900 border-slate-800 text-amber-400' : 'bg-[#e2dacb] border-[#cbd4c5] text-emerald-900'}`}>
+            {themeMode === 'sepia' ? '✨ النمط الداكن الحديث' : '📜 مظهر البوستر الزمردي'}
           </button>
         </div>
       </header>
 
-      {/* لوحة التحكم بالمؤشرات الجغرافية الدائرية */}
-      <section className={`border-b ${themeMode === 'sepia' ? 'bg-[#ebdcb9]/40 border-[#cfbe9f]' : 'bg-slate-900/60 border-slate-800'} py-8 px-4`}>
+      {/* لوحة التحكم بالمؤشرات الجغرافية الدائرية بتصميم هندسي متميز */}
+      <section className={`border-b ${themeMode === 'sepia' ? 'bg-[#e2dacb]/60 border-[#cbd4c5]' : 'bg-slate-900/60 border-slate-800'} py-8 px-4`}>
         <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-amber-900/40 bg-[#fcf8f0] text-amber-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.humidity}</div>
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-900/40 bg-[#fcfaf5] text-emerald-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.humidity}</div>
             <div className="text-xs font-bold">💧 متوسط الرطوبة (%)</div>
             <span className="text-[9px] text-slate-500 mt-0.5">آخر تحديث {metrics.lastUpdate}</span>
           </div>
           <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-amber-900/40 bg-[#fcf8f0] text-amber-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.temperature}</div>
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-900/40 bg-[#fcfaf5] text-emerald-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.temperature}</div>
             <div className="text-xs font-bold">🌡️ متوسط درجة الحرارة (مئوية)</div>
             <span className="text-[9px] text-slate-500 mt-0.5">آخر تحديث {metrics.lastUpdate}</span>
           </div>
           <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-amber-900/40 bg-[#fcf8f0] text-amber-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.windSpeed}</div>
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-900/40 bg-[#fcfaf5] text-emerald-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.windSpeed}</div>
             <div className="text-xs font-bold">💨 متوسط سرعة الرياح (كم/ساعة)</div>
             <span className="text-[9px] text-slate-500 mt-0.5">آخر تحديث {metrics.lastUpdate}</span>
           </div>
           <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-amber-900/40 bg-[#fcf8f0] text-amber-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.windAngle}</div>
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-900/40 bg-[#fcfaf5] text-emerald-950' : 'border-slate-700 bg-slate-950 text-slate-100'}`}>{metrics.windAngle}</div>
             <div className="text-xs font-bold">⚡ متوسط زاوية الرياح (°)</div>
             <span className="text-[9px] text-slate-500 mt-0.5">آخر تحديث {metrics.lastUpdate}</span>
           </div>
@@ -227,22 +226,22 @@ export default function App() {
                 <select value={selectedEra} onChange={(e) => setSelectedEra(e.target.value)} className={`w-full border rounded-xl px-3 py-2 text-xs focus:outline-none transition-all ${inputThemeClass}`}>
                   {ERAS.map(era => <option key={era.id} value={era.id}>{era.name}</option>)}
                 </select>
-                <button onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')} className="py-2 px-4 rounded-lg border text-xs font-bold bg-amber-800 text-white hover:bg-amber-900">
+                <button onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')} className="py-2 px-4 rounded-lg border text-xs font-bold bg-emerald-800 text-white hover:bg-emerald-900">
                   {viewMode === 'grid' ? 'عرض السرد المتسلسل (الخطي)' : 'عرض شبكة البوستر المصورة'}
                 </button>
               </div>
 
-              <div className="mt-2 border-t border-amber-900/10 pt-3">
+              <div className="mt-2 border-t border-emerald-900/10 pt-3">
                 <div className="text-xs font-black mb-2">تصنيفات مجالات الرصد والحماية:</div>
                 <div className="flex flex-wrap gap-1.5">
                   {CATEGORIES.map(cat => (
-                    <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`px-3 py-1 rounded-md text-[11px] font-black border transition-all ${selectedCategory === cat.id ? 'bg-amber-800 text-white border-amber-800' : 'bg-transparent border-amber-900/20'}`}>{cat.name}</button>
+                    <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`px-3 py-1 rounded-md text-[11px] font-black border transition-all ${selectedCategory === cat.id ? 'bg-emerald-800 text-white border-emerald-800' : 'bg-transparent border-emerald-900/20'}`}>{cat.name}</button>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* شبكة البوستر أو السرد الخطي */}
+            {/* شبكة البوستر أو السرد الخطي المطور */}
             {viewMode === 'grid' ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {filteredEvents.map(event => (
@@ -251,7 +250,7 @@ export default function App() {
                       <div>
                         <div className="flex justify-between items-center mb-1.5">
                           <span className="text-2xl font-black text-amber-600 font-mono">{event.year} م</span>
-                          <span className="text-[9px] py-0.5 px-2 bg-amber-850 text-white rounded font-bold">{event.icon} {event.category}</span>
+                          <span className="text-[9px] py-0.5 px-2 bg-emerald-850 text-white rounded font-bold">{event.icon} {event.category}</span>
                         </div>
                         <h3 className="text-sm font-black mb-1.5">{event.title}</h3>
                         <p className="text-xs leading-relaxed text-justify opacity-80">{event.description}</p>
@@ -261,26 +260,26 @@ export default function App() {
                 ))}
               </div>
             ) : (
-              <div className="relative border-r-2 mr-4 md:mr-8 pl-2 flex flex-col gap-6 border-amber-900/20">
+              <div className="relative border-r-2 mr-4 md:mr-8 pl-2 flex flex-col gap-6 border-emerald-900/20">
                 {filteredEvents.map(event => (
                   <div key={event.id} className="relative pr-8">
-                    <div className="absolute right-[-7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 bg-amber-800 border-amber-100"></div>
+                    <div className="absolute right-[-7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 bg-emerald-800 border-emerald-100"></div>
                     <div className={`border rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between shadow-md ${cardThemeClass}`}>
                       <div className="text-2xl font-black text-amber-600 font-mono">{event.year} م</div>
                       <div className="flex-1">
                         <h3 className="text-sm font-black">{event.title}</h3>
                         <p className="text-xs mt-1 opacity-80">{event.description}</p>
                       </div>
-                      <span className="text-xl p-2 rounded-xl bg-amber-850 text-white">{event.icon}</span>
+                      <span className="text-xl p-2 rounded-xl bg-emerald-850 text-white">{event.icon}</span>
                     </div>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* معرض الصور التوثيقي المباشر والمسحوب بالكامل من سيرفر ROPME المرفق */}
-            <div className="pt-8 border-t border-amber-900/10">
-              <h2 className="text-base font-black mb-4 text-amber-900 dark:text-amber-400">معرض الصور التاريخي والتوثيقي للمنظمة (ROPME Media Archive)</h2>
+            {/* معرض الصور التوثيقي المباشر والمسحوب بالكامل من سيرفر ROPME */}
+            <div className="pt-8 border-t border-emerald-900/10">
+              <h2 className="text-base font-black mb-4 text-emerald-900 dark:text-emerald-400">معرض الصور التاريخي والتوثيقي للمنظمة (ROPME Media Archive)</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {GALLERY_IMAGES.map(img => (
                   <div key={img.id} className={`rounded-xl overflow-hidden border shadow-sm group ${cardThemeClass}`}>
@@ -311,8 +310,8 @@ export default function App() {
         )}
       </main>
 
-      {/* ذيل المنصة الأكاديمي المطور */}
-      <footer className={`border-t px-4 py-6 text-center text-xs transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cfbe9f] bg-[#ebdcb9]/40 text-[#5d4037]' : 'border-slate-850 bg-slate-950 text-slate-400'}`}>
+      {/* ذيل المنصة الأكاديمي المطور بالشكل الجديد */}
+      <footer className={`border-t px-4 py-6 text-center text-xs transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cbd4c5] bg-[#e2dacb]/40 text-[#1e3f20]' : 'border-slate-850 bg-slate-950 text-slate-400'}`}>
         <p className="font-black">حقوق الطبع والنشر © 2026 محفوظة للمنصة الإقليمية لحماية البيئة البحرية (ROPME)</p>
         <p className="text-[10px] mt-1">جميع البيانات والصور مسحوبة وموثقة من قنوات وبوابة التطوير للمنظمة الإقليمية للدول الأعضاء.</p>
       </footer>
