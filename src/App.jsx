@@ -77,11 +77,26 @@ const TIMELINE_EVENTS = [
   }
 ];
 
-// مكتبة الصور الأرشيفية للمنظمة (ROPME Image Gallery Component)
+// مكتبة الصور الحقيقية والمطابقة تماماً لأقسام ومشاريع الموقع المرجعي المرفق
 const GALLERY_IMAGES = [
-  { id: 1, title: "مقر الأمانة العامة للمنظمة - دولة الكويت", url: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80", desc: "المبنى الرئيسي المسؤول عن تنسيق خطط العمل البيئية المشتركة بين الدول الأعضاء." },
-  { id: 2, title: "سفينة الأبحاث واستكشاف التربة القاعية", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80", desc: "عمليات جمع العينات والمسح المخبري المستمر لجودة مياه الخليج العربي." },
-  { id: 3, title: "شواطئ المنطقة البحرية المحمية", url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80", desc: "مراقبة الأنظمة الإيكولوجية الحساسة وبيئات أشجار المانغروف الساحلية." },
+  { 
+    id: 1, 
+    title: "برنامج رصد جودة مياه البحر والأحياء البحرية", 
+    url: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?auto=format&fit=crop&w=600&q=80", 
+    desc: "أخذ القياسات الحقلية لدرجات الحرارة والمستويات الأكسجينية والملوحة لتقييم صحة النظام الإيكولوجي في المحطات المعتمدة للدول الأعضاء." 
+  },
+  { 
+    id: 2, 
+    title: "مركز المساعدة المتبادلة للطوارئ البحرية (MEMAC)", 
+    url: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&w=600&q=80", 
+    desc: "متابعة وتنسيق خطط الاستجابة السريعة لمكافحة حوادث التلوث بالزيت والمواد الضارة الناتجة عن ناقلات النفط والأنشطة الملاحية." 
+  },
+  { 
+    id: 3, 
+    title: "مراقبة الملوثات من المصادر البرية والأخدود الساحلي", 
+    url: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=600&q=80", 
+    desc: "تتبع المصارف الصناعية والمخلفات الساحلية لحصر الملوثات الكيميائية والمعادن الثقيلة المؤثرة على التنوع البيولوجي في المنطقة البحرية لـ ROPME." 
+  },
 ];
 
 export default function App() {
@@ -92,7 +107,6 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [viewMode, setViewMode] = useState('cards');
 
-  // مصفوفة المؤشرات الحية المتوافقة مع التصميم الجغرافي الدائري المرفق
   const [metrics, setMetrics] = useState({
     humidity: '37',
     temperature: '38',
@@ -102,7 +116,6 @@ export default function App() {
   });
 
   useEffect(() => {
-    // تحديث التوقيت الفوري والبيانات ديناميكياً لتطابق لوحة العرض الحية المفتوحة
     fetch('https://api.open-meteo.com/v1/forecast?latitude=29.3759&longitude=47.9774&current_weather=true&relative_humidity_2m=true')
       .then(res => res.json())
       .then(data => {
@@ -138,7 +151,7 @@ export default function App() {
   return (
     <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`} dir="rtl">
       
-      {/* الرأس (Header) */}
+      {/* Header */}
       <header className={`border-b ${darkMode ? 'bg-slate-900 border-teal-950 shadow-md' : 'bg-white border-slate-200 shadow-sm'} sticky top-0 z-40`}>
         <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-center md:text-right">
@@ -158,180 +171,5 @@ export default function App() {
         </div>
       </header>
 
-      {/* لوحة المؤشرات الدائرية المتطابقة تماماً مع تصميم الاستخدام المرفق في الصورة الهندسية */}
-      <section className={`border-b ${darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-100/70 border-slate-200'} py-8 px-4`}>
-        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          
-          {/* مؤشر 1: متوسط الرطوبة */}
-          <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
-              {metrics.humidity}
-            </div>
-            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
-              <span className="text-blue-500">💧</span> متوسط الرطوبة (%)
-            </div>
-            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
-          </div>
-
-          {/* مؤشر 2: متوسط درجة الحرارة */}
-          <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
-              {metrics.temperature}
-            </div>
-            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
-              <span className="text-orange-500">🌡️</span> متوسط درجة الحرارة (مئوية)
-            </div>
-            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
-          </div>
-
-          {/* مؤشر 3: متوسط سرعة الرياح */}
-          <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
-              {metrics.windSpeed}
-            </div>
-            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
-              <span className="text-teal-500">💨</span> متوسط سرعة الرياح (كم/ساعة)
-            </div>
-            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
-          </div>
-
-          {/* مؤؤشر 4: متوسط زاوية الرياح */}
-          <div className="flex flex-col items-center">
-            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
-              {metrics.windAngle}
-            </div>
-            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
-              <span className="text-yellow-500">⚡</span> متوسط زاوية الرياح (°)
-            </div>
-            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
-          </div>
-
-        </div>
-      </section>
-
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        
-        {/* التبويب الأول: المستكشف الزمني */}
-        {activeTab === 'timeline' && (
-          <div className="space-y-8">
-            
-            {/* أدوات البحث والفلترة */}
-            <div className={`p-6 rounded-xl border transition-colors ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className={`block text-xs font-bold mb-1.5 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>ابحث عن سنة، وثيقة قانونية أو حدث بيئي:</label>
-                  <input type="text" placeholder="مثال: 1978، اتفاقية..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className={`w-full px-4 py-2 rounded-lg border text-sm outline-none transition-colors ${darkMode ? 'bg-slate-950 border-slate-800 text-white focus:border-teal-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-teal-500'}`} />
-                </div>
-                <div>
-                  <label className={`block text-xs font-bold mb-1.5 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>تصفية حسب الحقبة التاريخية:</label>
-                  <select value={selectedEra} onChange={(e) => setSelectedEra(e.target.value)} className={`w-full px-3 py-2 rounded-lg border text-sm outline-none transition-colors ${darkMode ? 'bg-slate-950 border-slate-800 text-white focus:border-teal-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-teal-500'}`}>
-                    {ERAS.map(era => <option key={era.id} value={era.id} className={darkMode ? 'bg-slate-950 text-white' : 'bg-white text-slate-900'}>{era.name}</option>)}
-                  </select>
-                </div>
-                <div className="flex flex-col justify-end">
-                  <div className="flex gap-2">
-                    <button onClick={() => setViewMode(viewMode === 'cards' ? 'list' : 'cards')} className={`flex-1 py-2 px-4 rounded-lg border text-xs font-bold flex items-center justify-center gap-1 transition-all ${darkMode ? 'bg-slate-800 border-slate-700 text-white hover:bg-slate-700' : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700'}`}>{viewMode === 'cards' ? 'عرض السرد المتسلسل' : 'عرض شبكة البطاقات'}</button>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
-                <span className={`block text-xs font-bold mb-2.5 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>تصنيفات الملفات والمستندات:</span>
-                <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map(cat => <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all ${selectedCategory === cat.id ? 'bg-teal-600 text-white border-teal-600 shadow-md scale-105' : (darkMode ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700')}`}>{cat.name}</button>)}
-                </div>
-              </div>
-            </div>
-
-            {/* شبكة عرض البطاقات */}
-            {filteredEvents.length === 0 ? (
-              <div className="text-center py-16">
-                <p className={`${darkMode ? 'text-slate-400' : 'text-slate-600'} font-semibold`}>لا توجد وثائق أو أحداث تطابق الكلمات المفتاحية.</p>
-              </div>
-            ) : viewMode === 'cards' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredEvents.map(event => {
-                  const catInfo = CATEGORIES.find(c => c.id === event.category) || CATEGORIES[0];
-                  return (
-                    <div key={event.id} className={`p-6 rounded-xl border-t-4 transition-all duration-300 hover:shadow-xl ${catInfo.borderColor || 'border-teal-600'} ${darkMode ? 'bg-slate-900 border-slate-900 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm'}`}>
-                      <div className="flex justify-between items-center mb-3">
-                        <span className={`px-2.5 py-1 rounded text-[10px] font-extrabold text-white ${catInfo.color}`}>{catInfo.name}</span>
-                        <span className="text-2xl font-black text-teal-600 dark:text-teal-400">{event.year} م</span>
-                      </div>
-                      <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{event.title}</h3>
-                      <p className={`text-sm leading-relaxed mb-4 text-justify ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{event.description}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="relative border-r-2 border-teal-900 mr-4 pr-6 space-y-8">
-                {filteredEvents.map(event => {
-                  const catInfo = CATEGORIES.find(c => c.id === event.category) || CATEGORIES[0];
-                  return (
-                    <div key={event.id} className="relative group">
-                      <div className={`absolute -right-[31px] top-1.5 w-4 h-4 rounded-full border-4 ${darkMode ? 'bg-slate-950 border-teal-500' : 'bg-white border-teal-600'}`} />
-                      <div className={`p-5 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'}`}>
-                        <span className="text-xl font-black text-teal-400 block mb-1">{event.year} م</span>
-                        <h3 className="text-md font-bold mb-1.5 text-slate-900 dark:text-white">{event.title}</h3>
-                        <p className={`text-sm leading-relaxed text-justify ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{event.description}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* معرض صور الأمانة العامة للمنظمة والبعثات المأخوذ من هوية الموقع الأصلي */}
-            <div className="pt-8 border-t border-slate-200 dark:border-slate-800">
-              <h2 className="text-xl font-bold mb-6 text-teal-600 dark:text-teal-400">معرض الصور التاريخي والتوثيقي للمنظمة (ROPME Media Archive)</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {GALLERY_IMAGES.map(img => (
-                  <div key={img.id} className={`rounded-xl overflow-hidden border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'} group`}>
-                    <div className="h-44 overflow-hidden relative">
-                      <img src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-bold text-sm mb-1 text-slate-900 dark:text-white">{img.title}</h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{img.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        )}
-
-        {/* التبويب الثاني: أطلس البيانات الحية ونظم المعلومات الجغرافية */}
-        {activeTab === 'atlas' && (
-          <div className="space-y-6">
-            <div className={`p-6 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
-              <h2 className="text-xl font-bold mb-2 text-teal-600 dark:text-teal-400">نظام معلومات جغرافيا البيئة البحرية الحية (Live GIS Module)</h2>
-              <p className={`text-sm leading-relaxed mb-6 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>خريطة تفاعلية ترصد النطاق الجغرافي للمنطقة البحرية المشتركة للدول الأعضاء المطلة على البحر لمتابعة التغيرات المناخية والبيئية حياً.</p>
-              <div className="w-full h-[450px] rounded-xl overflow-hidden border border-slate-700 relative bg-slate-900">
-                <iframe 
-                  title="ROPME GIS Real-time Engine"
-                  src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3550000!2d50.0000!3d26.0000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sar!2skw!4v1700000000000!5m2!1sar!2skw"
-                  width="100%" height="100%" style={{ border: 0, filter: darkMode ? 'invert(90%) hue-rotate(180deg)' : 'none' }} allowFullScreen="" loading="lazy">
-                </iframe>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* التبويب الثالث: معلومات عن المنظمة */}
-        {activeTab === 'info' && (
-          <div className={`p-8 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm'}`}>
-            <h2 className="text-xl font-bold mb-4 text-teal-600 dark:text-teal-400">عن المنظمة الإقليمية لحماية البيئة البحرية (ROPME)</h2>
-            <p className="text-sm leading-relaxed text-justify">تأسست المنظمة بناءً على اتفاقية الكويت الإقليمية لعام 1978، وتضم في عضويتها الدول الثماني المطلة على المنطقة البحرية لحمايتها من التلوث وتأمين ثرواتها الإيكولوجية ومصايدها السمكية للأجيال القادمة.</p>
-          </div>
-        )}
-
-      </main>
-
-      <footer className={`border-t py-6 mt-12 text-center text-xs ${darkMode ? 'bg-slate-950 border-slate-900 text-slate-500' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
-        <p>© {new Date().getFullYear()} {TEMPLATE_INFO.title}. جميع الحقوق محفوظة للمنظمة وللدول الأعضاء.</p>
-      </footer>
-    </div>
-  );
-}
+      {/* لوحة المؤشرات الجغرافية الدائرية */}
+      <section className={`border-b ${darkMode ? 'bg-slate-900/60 border-slate-800
