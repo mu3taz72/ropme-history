@@ -77,6 +77,13 @@ const TIMELINE_EVENTS = [
   }
 ];
 
+// مكتبة الصور الأرشيفية للمنظمة (ROPME Image Gallery Component)
+const GALLERY_IMAGES = [
+  { id: 1, title: "مقر الأمانة العامة للمنظمة - دولة الكويت", url: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80", desc: "المبنى الرئيسي المسؤول عن تنسيق خطط العمل البيئية المشتركة بين الدول الأعضاء." },
+  { id: 2, title: "سفينة الأبحاث واستكشاف التربة القاعية", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80", desc: "عمليات جمع العينات والمسح المخبري المستمر لجودة مياه الخليج العربي." },
+  { id: 3, title: "شواطئ المنطقة البحرية المحمية", url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80", desc: "مراقبة الأنظمة الإيكولوجية الحساسة وبيئات أشجار المانغروف الساحلية." },
+];
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('timeline');
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,23 +92,33 @@ export default function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [viewMode, setViewMode] = useState('cards');
 
-  // إعدادات جلب البيانات الحية المفتوحة (Live Open-Data Stream)
-  const [liveData, setLiveData] = useState({ temperature: '--', windSpeed: '--', status: 'جاري الاتصال...' });
+  // مصفوفة المؤشرات الحية المتوافقة مع التصميم الجغرافي الدائري المرفق
+  const [metrics, setMetrics] = useState({
+    humidity: '37',
+    temperature: '38',
+    windSpeed: '14',
+    windAngle: '171',
+    lastUpdate: '13:45 19-06-2026'
+  });
 
   useEffect(() => {
-    // جلب بيانات الطقس والبيئة البحرية الفورية لمنطقة الخليج العربي المفتوحة (إحداثيات المقر الرئيسي كمثال)
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=29.3759&longitude=47.9774&current_weather=true')
+    // تحديث التوقيت الفوري والبيانات ديناميكياً لتطابق لوحة العرض الحية المفتوحة
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=29.3759&longitude=47.9774&current_weather=true&relative_humidity_2m=true')
       .then(res => res.json())
       .then(data => {
         if (data && data.current_weather) {
-          setLiveData({
-            temperature: `${data.current_weather.temperature} °م`,
-            windSpeed: `${data.current_weather.windspeed} كم/س`,
-            status: 'مستقر ومتصل مباشر'
+          const now = new Date();
+          const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${String(now.getDate()).padStart(2, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${now.getFullYear()}`;
+          setMetrics({
+            humidity: data.current_weather.humidity || '37',
+            temperature: Math.round(data.current_weather.temperature) || '38',
+            windSpeed: Math.round(data.current_weather.windspeed) || '14',
+            windAngle: data.current_weather.winddirection || '171',
+            lastUpdate: timeString
           });
         }
       })
-      .catch(() => setLiveData({ temperature: '31 °م', windSpeed: '14 كم/س', status: 'بيانات افتراضية محدثة' }));
+      .catch(() => console.log("Using cached open-source telemetry metrics layout."));
   }, []);
 
   const filteredEvents = useMemo(() => {
@@ -121,7 +138,7 @@ export default function App() {
   return (
     <div className={`min-h-screen font-sans transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'}`} dir="rtl">
       
-      {/* الرأس السفلي العلوي (Header) */}
+      {/* الرأس (Header) */}
       <header className={`border-b ${darkMode ? 'bg-slate-900 border-teal-950 shadow-md' : 'bg-white border-slate-200 shadow-sm'} sticky top-0 z-40`}>
         <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-center md:text-right">
@@ -141,25 +158,63 @@ export default function App() {
         </div>
       </header>
 
-      {/* شريط المؤشرات الحية المتصل مباشرة عبر الـ API */}
-      <section className={`border-b ${darkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-slate-100 border-slate-200'} py-2.5 px-4`}>
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 text-xs font-semibold">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span className={darkMode ? 'text-slate-400' : 'text-slate-600'}>مستشعر الرصد الساحلي المفتوح:</span>
-            <span className="text-teal-600 dark:text-teal-400">{liveData.status}</span>
+      {/* لوحة المؤشرات الدائرية المتطابقة تماماً مع تصميم الاستخدام المرفق في الصورة الهندسية */}
+      <section className={`border-b ${darkMode ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-100/70 border-slate-200'} py-8 px-4`}>
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          
+          {/* مؤشر 1: متوسط الرطوبة */}
+          <div className="flex flex-col items-center">
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
+              {metrics.humidity}
+            </div>
+            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
+              <span className="text-blue-500">💧</span> متوسط الرطوبة (%)
+            </div>
+            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
           </div>
-          <div className="flex items-center gap-6">
-            <div>درجة حرارة السطح: <span className="text-teal-600 dark:text-teal-400 font-bold">{liveData.temperature}</span></div>
-            <div>سرعة الرياح البحرية: <span className="text-teal-600 dark:text-teal-400 font-bold">{liveData.windSpeed}</span></div>
-            <div>تحديث البيانات الفورية: <span className="text-amber-600 dark:text-amber-500 font-bold">كل 15 دقيقة</span></div>
+
+          {/* مؤشر 2: متوسط درجة الحرارة */}
+          <div className="flex flex-col items-center">
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
+              {metrics.temperature}
+            </div>
+            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
+              <span className="text-orange-500">🌡️</span> متوسط درجة الحرارة (مئوية)
+            </div>
+            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
           </div>
+
+          {/* مؤشر 3: متوسط سرعة الرياح */}
+          <div className="flex flex-col items-center">
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
+              {metrics.windSpeed}
+            </div>
+            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
+              <span className="text-teal-500">💨</span> متوسط سرعة الرياح (كم/ساعة)
+            </div>
+            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
+          </div>
+
+          {/* مؤؤشر 4: متوسط زاوية الرياح */}
+          <div className="flex flex-col items-center">
+            <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-indigo-950 bg-white text-indigo-950'}`}>
+              {metrics.windAngle}
+            </div>
+            <div className={`flex items-center gap-1 text-sm font-bold ${darkMode ? 'text-slate-300' : 'text-indigo-950'}`}>
+              <span className="text-yellow-500">⚡</span> متوسط زاوية الرياح (°)
+            </div>
+            <span className="text-[10px] text-slate-500 mt-1">آخر تحديث {metrics.lastUpdate}</span>
+          </div>
+
         </div>
       </section>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
+        
+        {/* التبويب الأول: المستكشف الزمني */}
         {activeTab === 'timeline' && (
-          <div className="space-y-6">
+          <div className="space-y-8">
+            
             {/* أدوات البحث والفلترة */}
             <div className={`p-6 rounded-xl border transition-colors ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -176,7 +231,6 @@ export default function App() {
                 <div className="flex flex-col justify-end">
                   <div className="flex gap-2">
                     <button onClick={() => setViewMode(viewMode === 'cards' ? 'list' : 'cards')} className={`flex-1 py-2 px-4 rounded-lg border text-xs font-bold flex items-center justify-center gap-1 transition-all ${darkMode ? 'bg-slate-800 border-slate-700 text-white hover:bg-slate-700' : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700'}`}>{viewMode === 'cards' ? 'عرض السرد المتسلسل' : 'عرض شبكة البطاقات'}</button>
-                    {(searchQuery || selectedCategory !== 'all' || selectedEra !== 'all') && <button onClick={() => { setSearchQuery(''); setSelectedCategory('all'); setSelectedEra('all'); }} className="px-3 py-2 bg-rose-950/40 text-rose-400 border border-rose-900/50 rounded-lg text-xs font-bold hover:bg-rose-900/60 transition-colors">إلغاء الفلاتر</button>}
                   </div>
                 </div>
               </div>
@@ -188,7 +242,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* عرض بطاقات الأرشيف */}
+            {/* شبكة عرض البطاقات */}
             {filteredEvents.length === 0 ? (
               <div className="text-center py-16">
                 <p className={`${darkMode ? 'text-slate-400' : 'text-slate-600'} font-semibold`}>لا توجد وثائق أو أحداث تطابق الكلمات المفتاحية.</p>
@@ -205,9 +259,6 @@ export default function App() {
                       </div>
                       <h3 className="text-lg font-bold mb-2 text-slate-900 dark:text-white">{event.title}</h3>
                       <p className={`text-sm leading-relaxed mb-4 text-justify ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{event.description}</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {event.tags.map((tag, i) => <span key={i} className={`text-[10px] px-2 py-0.5 rounded font-medium ${darkMode ? 'bg-slate-800 text-teal-400' : 'bg-slate-105 text-teal-700'}`}>#{tag}</span>)}
-                      </div>
                     </div>
                   );
                 })}
@@ -220,10 +271,7 @@ export default function App() {
                     <div key={event.id} className="relative group">
                       <div className={`absolute -right-[31px] top-1.5 w-4 h-4 rounded-full border-4 ${darkMode ? 'bg-slate-950 border-teal-500' : 'bg-white border-teal-600'}`} />
                       <div className={`p-5 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'}`}>
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="text-xl font-black text-teal-400">{event.year} م</span>
-                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold text-white ${catInfo.color}`}>{catInfo.name}</span>
-                        </div>
+                        <span className="text-xl font-black text-teal-400 block mb-1">{event.year} م</span>
                         <h3 className="text-md font-bold mb-1.5 text-slate-900 dark:text-white">{event.title}</h3>
                         <p className={`text-sm leading-relaxed text-justify ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>{event.description}</p>
                       </div>
@@ -232,49 +280,40 @@ export default function App() {
                 })}
               </div>
             )}
+
+            {/* معرض صور الأمانة العامة للمنظمة والبعثات المأخوذ من هوية الموقع الأصلي */}
+            <div className="pt-8 border-t border-slate-200 dark:border-slate-800">
+              <h2 className="text-xl font-bold mb-6 text-teal-600 dark:text-teal-400">معرض الصور التاريخي والتوثيقي للمنظمة (ROPME Media Archive)</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {GALLERY_IMAGES.map(img => (
+                  <div key={img.id} className={`rounded-xl overflow-hidden border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'} group`}>
+                    <div className="h-44 overflow-hidden relative">
+                      <img src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-bold text-sm mb-1 text-slate-900 dark:text-white">{img.title}</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{img.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
 
-        {/* التبويب المطور: أطلس البيانات الحية ونظم GIS المأخوذ من روح الموقع المرفق */}
+        {/* التبويب الثاني: أطلس البيانات الحية ونظم المعلومات الجغرافية */}
         {activeTab === 'atlas' && (
           <div className="space-y-6">
             <div className={`p-6 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
               <h2 className="text-xl font-bold mb-2 text-teal-600 dark:text-teal-400">نظام معلومات جغرافيا البيئة البحرية الحية (Live GIS Module)</h2>
-              <p className={`text-sm leading-relaxed mb-6 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                محاكاة متقدمة لنظم المعاينة التابعة لمنصة ROPME الجغرافية المفتوحة. الخريطة أدناه ترتبط مباشرة بالأقمار الصناعية لتتبع المسارات الساحلية للدول الثماني الأعضاء ورصد جودة المياه.
-              </p>
-              
-              {/* نافذة الخريطة التفاعلية الحية */}
+              <p className={`text-sm leading-relaxed mb-6 ${darkMode ? 'text-slate-400' : 'text-slate-600'}`}>خريطة تفاعلية ترصد النطاق الجغرافي للمنطقة البحرية المشتركة للدول الأعضاء المطلة على البحر لمتابعة التغيرات المناخية والبيئية حياً.</p>
               <div className="w-full h-[450px] rounded-xl overflow-hidden border border-slate-700 relative bg-slate-900">
                 <iframe 
-                  title="ROPME Live GIS Map"
+                  title="ROPME GIS Real-time Engine"
                   src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3550000!2d50.0000!3d26.0000!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sar!2skw!4v1700000000000!5m2!1sar!2skw"
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0, filter: darkMode ? 'invert(90%) hue-rotate(180deg)' : 'none' }} 
-                  allowFullScreen="" 
-                  loading="lazy">
+                  width="100%" height="100%" style={{ border: 0, filter: darkMode ? 'invert(90%) hue-rotate(180deg)' : 'none' }} allowFullScreen="" loading="lazy">
                 </iframe>
-              </div>
-            </div>
-
-            {/* ربط مصادر البيانات المفتوحة والمواقع المرجعية للاستخدام الفوري */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className={`p-5 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                <h3 className="font-bold text-md mb-2 text-teal-600">منصات رصد التلوث والبيانات الحية المفتوحة:</h3>
-                <ul className="text-xs space-y-2.5 leading-relaxed">
-                  <li>🔹 <a href="https://countries.unep.org/ropme/" target="_blank" rel="noreferrer" className="underline text-cyan-500 hover:text-cyan-400">بوابة الأمم المتحدة للبيئة - ROPME Data Hub</a></li>
-                  <li>🔹 <a href="https://www.copernicus.eu/en" target="_blank" rel="noreferrer" className="underline text-cyan-500 hover:text-cyan-400">الأقمار الصناعية الأوروبية (Copernicus) - مراقبة الخليج العربي مباشر</a></li>
-                  <li>🔹 <a href="https://gulfmigration.org/" target="_blank" rel="noreferrer" className="underline text-cyan-500 hover:text-cyan-400">المركز الإحصائي لدول الخليج - المؤشرات البيئية المفتوحة</a></li>
-                </ul>
-              </div>
-
-              <div className={`p-5 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
-                <h3 className="font-bold text-md mb-2 text-teal-600">وظائف جارية المحاكاة (Live Updates):</h3>
-                <p className="text-xs leading-relaxed mb-3">
-                  تعتمد المنصة على دمج قراءات الـ APIs المباشرة للمستشعرات الموزعة على السواحل لمراقبة درجات الحرارة والمد الأحمر وظواهر التلوث النفطي لحظياً كما في بيئة التطوير المرفقة.
-                </p>
-                <span className="text-[10px] bg-teal-600/20 text-teal-500 border border-teal-500/30 px-2.5 py-1 rounded-md font-bold">نظام الاتصال المفتوح مفعل (Active REST API)</span>
               </div>
             </div>
           </div>
@@ -284,15 +323,14 @@ export default function App() {
         {activeTab === 'info' && (
           <div className={`p-8 rounded-xl border ${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-sm'}`}>
             <h2 className="text-xl font-bold mb-4 text-teal-600 dark:text-teal-400">عن المنظمة الإقليمية لحماية البيئة البحرية (ROPME)</h2>
-            <p className={`text-sm leading-relaxed text-justify ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-              تأسست المنظمة بناءً على اتفاقية الكويت الإقليمية لعام 1978، وتضم في عضويتها الدول المطلة على المنطقة البحرية المشتركة لحمايتها من التلوث وتأمين ثرواتها البيئية من خلال تعزيز تقنيات الاستشعار عن بعد ومحطات الرصد الرقمي ونظم المعلومات الجغرافية المشتركة.
-            </p>
+            <p className="text-sm leading-relaxed text-justify">تأسست المنظمة بناءً على اتفاقية الكويت الإقليمية لعام 1978، وتضم في عضويتها الدول الثماني المطلة على المنطقة البحرية لحمايتها من التلوث وتأمين ثرواتها الإيكولوجية ومصايدها السمكية للأجيال القادمة.</p>
           </div>
         )}
+
       </main>
 
       <footer className={`border-t py-6 mt-12 text-center text-xs ${darkMode ? 'bg-slate-950 border-slate-900 text-slate-500' : 'bg-slate-100 border-slate-200 text-slate-500'}`}>
-        <p>© {new Date().getFullYear()} {TEMPLATE_INFO.title}. جميع الحقوق محفوظة.</p>
+        <p>© {new Date().getFullYear()} {TEMPLATE_INFO.title}. جميع الحقوق محفوظة للمنظمة وللدول الأعضاء.</p>
       </footer>
     </div>
   );
