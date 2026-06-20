@@ -12,114 +12,85 @@ const CATEGORIES = [
   { id: 'admin', name: 'مؤتمرات وقرارات إدارية', color: 'bg-emerald-800 border-emerald-700', textColor: 'text-emerald-700' },
 ];
 
-// مصفوفة الأحداث التاريخية المستخلصة والمحققة بالكامل من جدول وثيقة الدليل المرفقة
+const ERAS = [
+  { id: 'الكل', name: 'عرض جميع الفترات التاريخية' },
+  { id: 'era_1', name: 'مرحلة التأسيس والبروتوكولات الأولى (1978 - 1989)' },
+  { id: 'era_2', name: 'مرحلة الأزمات البيئية وإعادة التأهيل (1990 - 2005)' },
+  { id: 'era_3', name: 'الألفية الجديدة واستدامة العمل المشترك (+2006)' },
+];
+
+// مصفوفة الأحداث المدققة والمستكملة من مستند دليل الأرشيف لعام 1978 م
 const TIMELINE_EVENTS = [
   {
     id: 1,
     year: 1978,
-    title: "اعتماد خطة العمل لحماية وتنمية البيئة البحرية والمناطق الساحلية",
+    title: "المؤتمر الإقليمي للمفوضين لحماية البيئة البحرية - الكويت",
     category: "legal",
     icon: "📜",
     image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img3.jpg",
-    description: "اعتماد خطة العمل الإقليمية الشاملة بمشاركة ممثلي المندوبين المفوضين للبحرين، إيران، العراق، الكويت، عمان، قطر، المملكة العربية السعودية، والإمارات العربية المتحدة لوضع أطر التعاون الفني."
+    description: "انعقاد المؤتمر التاريخي في دولة الكويت من 15-23 أبريل 1978 م، والذي أسفر عن اعتماد خطة العمل لحماية وتنمية البيئة البحرية والمناطق الساحلية للبحرين، إيران، العراق، الكويت، عمان، قطر، السعودية، والإمارات."
   },
   {
     id: 2,
-    year: 1979,
-    title: "اجتماع الخبراء الحكوميين لتأسيس مركز المساعدة المتبادلة طوارئ (MEMAC)",
-    category: "admin",
-    icon: "⚓",
-    image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg",
-    description: "انعقاد اجتماع خبراء ومندوبي الدول الأعضاء في المنامة بالبحرين لوضع الترتيبات الهيكلية والمالية لتشغيل مركز المساعدة المتبادلة للطوارئ البحرية للحد من انسكابات الزيت."
+    year: 1978,
+    title: "توقيع اتفاقية الكويت الإقليمية للتعاون في حماية البيئة من التلوث",
+    category: "legal",
+    icon: "✒️",
+    image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img2.jpg",
+    description: "التوقيع الرسمي والمصادقة على اتفاقية الكويت الإقليمية في تاريخ 24 أبريل 1978 م لوضع الأطر التشريعية والالتزامات القانونية للدول الثماني المطلة على المنطقة البحرية المشتركة."
   },
   {
     id: 3,
-    year: 1980,
-    title: "تدشين المسح الأنثروبولوجي ومصادر التلوث البرية والصناعية",
-    category: "env",
-    icon: "🔬",
-    image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img2.jpg",
-    description: "إطلاق بعثات الجرد الشامل والتقييم السريع للملوثات السائلة والصلبة والمصادر الصناعية في الكويت، البحرين، قطر، عمان، وشرق المملكة العربية السعودية والإمارات."
+    year: 1978,
+    title: "إقرار البروتوكول الإقليمي الخاص بمكافحة التلوث بالزيت في حالات الطوارئ",
+    category: "legal",
+    icon: "🚨",
+    image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg",
+    description: "اعتماد البروتوكول الملحق بالاتفاقية للتعاون الإقليمي في مكافحة التلوث بالزيت والمواد الضارة الأخرى في الحالات الطارئة، والذي مهد لتأسيس مركز MEMAC العملياتي."
   },
   {
     id: 4,
-    year: 1981,
-    title: "الاجتماع الوزاري الأول لمجلس المنظمة الإقليمية (ROPME Council)",
+    year: 1979,
+    title: "اجتماع الخبراء الحكوميين لتأسيس الكيان العملياتي لـ MEMAC",
     category: "admin",
-    icon: "🏛️",
-    image: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80",
-    description: "الإنعقاد الرسمي الأول للمجلس الأعلى للمنظمة في دولة الكويت لإقرار الميزانيات واللوائح الداخلية واعتماد الهيكل التنفيذي للأمانة العامة."
+    icon: "⚓",
+    image: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&w=600&q=80",
+    description: "انعقاد مجمع الخبراء والمندوبين في المنامة بالبحرين لوضع الترتيبات الهيكلية والإدارية والمالية وتنسيق آليات الاستجابة السريعة لحوادث التسرب النفطي الناجم عن الناقلات."
   },
   {
     id: 5,
-    year: 1982,
-    title: "دخول بروتوكول مكافحة التلوث بالزيت والمواد الضارة حيز التنفيذ",
-    category: "legal",
-    icon: "⚖️",
-    image: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&w=600&q=80",
-    description: "التصديق القانوني والبدء الفعلي في تطبيق آليات التعاون المشترك بين الدول الثماني لتبادل المعدات والأفراد والإبلاغ الفوري عن حوادث الناقلات."
-  },
-  {
-    id: 6,
     year: 1983,
-    title: "إطلاق برنامج رصد الملوثات والمواصفات الأوقيانوغرافية (18-Month Program)",
+    title: "إطلاق برنامج رصد الملوثات والمواصفات الأوقيانوغرافية الإقليمي",
     category: "env",
     icon: "🐳",
     image: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?auto=format&fit=crop&w=600&q=80",
-    description: "توقيع مذكرات التفاهم التفصيلية مع المراكز الوطنية ومختبرات الدول الأعضاء لبدء أخذ العينات وتحليل المعادن الثقيلة والملوحة في مياه البحر والتربة قاعياً."
+    description: "تفعيل أول مسح مخبري حقلي شامل بالتعاون مع المختبرات الوطنية للدول الأعضاء لأخذ عينات الملوحة والمعادن الثقيلة وتتبع صحة البيئة البحرية قاعياً."
   },
   {
-    id: 7,
-    year: 1984,
-    title: "الاجتماع القانوني الفني الثاني للبروتوكول الخاص بمصادر البر",
-    category: "legal",
-    icon: "📜",
-    image: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=600&q=80",
-    description: "اجتماع الخبراء المتخصصين في الكويت لمراجعة نصوص وصياغة مسودة الاتفاقية الملزمة للحد من الصرف الصناعي والصحي الساحلي المباشر."
-  },
-  {
-    id: 8,
+    id: 6,
     year: 1991,
-    title: "إدارة أكبر كارثة تسرب نفطي في التاريخ وتشكيل فريق الاستجابة العالمي",
+    title: "إدارة كارثة بقعة الزيت الكبرى في الخليج وتأهيل المصايد الشاطئية",
     category: "env",
     icon: "🚨",
     image: "https://images.unsplash.com/photo-1508847154043-be12a3b4d69e?auto=format&fit=crop&w=600&q=80",
-    description: "قيادة وتنسيق جهود رصد وتقييم الأثر البيئي المدمر الناتج عن تدفق ملايين براميل النفط خلال حرب تحرير الكويت، بمشاركة المنظمات الدولية لإعادة تأهيل الشواطئ."
+    description: "تنسيق أكبر جهد بيئي إقليمي ودولي مشترك لرصد وتقييم الأثر الإيكولوجي الناتج عن تسرب ملايين براميل النفط خلال حرب تحرير الكويت وحماية محطات التحلية."
   },
   {
-    id: 9,
-    year: 1998,
-    title: "بروتوكول التحكم في النقل البحري للنفايات الخطرة والتخلص منها عبر الحدود",
-    category: "legal",
-    icon: "⚖️",
-    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80",
-    description: "اجتماع المفوضين في طهران للتوقيع الرسمي على البروتوكول الإقليمي الصارم لتنظيم وحظر حركة ناقلات النفايات السامة والمواد الكيميائية في مياه الخليج وبحر عمان."
-  },
-  {
-    id: 10,
-    year: 2013,
-    title: "تنفيذ البعثة البحرية الكبرى الشاملة لتقييم جودة المياه والأحياء",
-    category: "env",
-    icon: "🔬",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
-    description: "مسح بحري شامل بالتنسيق مع سفن الأبحاث لجمع وتحليل عينات المياه والرواسب القاعية لرصد نسب التلوث بالمعادن الثقيلة وتأثيرات التغير المناخي."
-  },
-  {
-    id: 11,
+    id: 7,
     year: 2026,
-    title: "إعتماد التحديث الإستراتيجي الشامل لحماية التنوع البيولوجي",
+    title: "اعتماد الوثيقة الاستراتيجية الموحدة للتغير المناخي والمد الأحمر",
     category: "admin",
     icon: "🔋",
     image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80",
-    description: "اعتماد الوثيقة الموحدة للدول الأعضاء لمواجهة ارتفاع درجات الحرارة وظواهر المد الأحمر المتكررة وتعزيز مرونة النظم البيئية الساحلية."
+    description: "تحديث الأطر التنفيذية المشتركة للدول الأعضاء لتعزيز مرونة النظم البيئية الساحلية وتفعيل تقنيات الإنذار المبكر لمواجهة الارتفاع الحراري في المياه."
   }
 ];
 
-// تصاعدي كرونولوجي لمعرض الصور التاريخي التوثيقي من القديم إلى الأحدث
+// المعرض التوثيقي المرتب كرونولوجياً وتصاعدياً من الأقدم للأحدث مع الصور الصحيحة
 const GALLERY_IMAGES = [
-  { id: 1, year: "1978 م", title: "مرحلة التأسيس وتوقيع الميثاق الإقليمي الأول", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img3.jpg", desc: "الحظات الأولى لإطلاق خطة العمل البيئية المشتركة ووضع الهيكل التنظيمي للمنظمة بمشاركة الدول الثماني." },
-  { id: 2, year: "1982 م", title: "تفعيل خطط الطوارئ وبناء المقرات التشغيلية لـ MEMAC", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg", desc: "تأسيس مركز مكافحة التلوث بالبحرين وتنسيق أنظمة الإنذار المبكر للناقلات." },
-  { id: 3, year: "1985 م", title: "بعثات الرصد الحقلي الساحلي للملوثات البرية", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img2.jpg", desc: "أخذ القياسات المخبرية لدرجات حرارة المياه ونسب الملوحة والمعادن لحماية البيئة الإيكولوجية الساحلية." },
+  { id: 1, year: "1978 م", title: "مؤتمر المفوضين التاريخي في الكويت واطلاق ميثاق العمل البيئي الأول", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img3.jpg", desc: "اللحظات الأولى لتوقيع معاهدة حماية المنطقة البحرية المشتركة من قبل الدول الثماني الأعضاء." },
+  { id: 2, year: "1982 م", title: "تجهيز وتشييد الكيان العملياتي لمركز المساعدة المتبادلة MEMAC", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg", desc: "إرساء غرف المراقبة والاتصال البرقي لتلقي بلاغات انسكابات الزيت والمواد الكيميائية الضارة." },
+  { id: 3, year: "1985 م", title: "بعثات الرصد الحقلي البيئي لمصادر التلوث البرية والصناعية", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img2.jpg", desc: "أخذ الفحوصات المخبرية لدرجات حرارة المياه والرواسب القاعية لحماية مصايد الأسماك." },
 ];
 
 const MEMBER_STATES = [
@@ -139,7 +110,7 @@ export default function App() {
   const [selectedEra, setSelectedEra] = useState('الكل');
   const [viewMode, setViewMode] = useState('grid');
   const [themeMode, setThemeMode] = useState('sepia');
-  const [selectedEventModal, setSelectedEventModal] = useState(null); // حالة النافذة المنبثقة التفاعلية للحدث
+  const [selectedEventModal, setSelectedEventModal] = useState(null);
 
   const filteredEvents = useMemo(() => {
     return TIMELINE_EVENTS.filter(event => {
@@ -170,11 +141,10 @@ export default function App() {
   return (
     <div dir="rtl" className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${bgThemeClass}`}>
       
-      {/* الرأس العلوي الفخم متضمناً العنوان وشعار ROPME المعتمد والبريفيور المسبق للنشر */}
+      {/* 1 الهيدر المطور بالكامل وشعار ROPME مع تنبيه البريفيو والبروتوكول لوني متناسق */}
       <header className={`border-b backdrop-blur-md sticky top-0 z-40 px-4 py-4 md:px-8 transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cbd4c5] bg-[#f5efe4]/90' : 'border-slate-800 bg-slate-900/85'}`}>
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4 text-center lg:text-right">
-            {/* الشعار الهندسي المطابق للصورة المرفقة رقم Screenshot 2026-06-19 at 10.30.42_2.jpg */}
             <div className="w-14 h-14 bg-emerald-950 rounded-xl border border-emerald-800 flex items-center justify-center font-black text-white text-md tracking-tight shadow-md flex-shrink-0">
               ROPME
             </div>
@@ -183,7 +153,7 @@ export default function App() {
                 <h1 className="text-xl md:text-2xl font-black tracking-tight text-emerald-950 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-teal-400 dark:to-emerald-400">
                   {TEMPLATE_INFO.title}
                 </h1>
-                <span className="text-[9px] py-0.5 px-2 rounded-full font-bold bg-amber-600 text-white animate-pulse">معاينة النظام المستقر قبل النشر (Preview)</span>
+                <span className="text-[9px] py-0.5 px-2 rounded-full font-bold bg-amber-600 text-white animate-pulse">معاينة آمنة مستقرة (Preview Template)</span>
               </div>
               <p className={`text-xs mt-0.5 ${themeMode === 'sepia' ? 'text-[#4f6f52]' : 'text-slate-400'}`}>
                 {TEMPLATE_INFO.subtitle}
@@ -199,28 +169,24 @@ export default function App() {
         </div>
       </header>
 
-      {/* الـ Dashboard الإحصائي والتاريخي البحري البديل عن مؤشرات الطقس */}
+      {/* 2 الـ Dashboard الأرشيفي الإحصائي المستبدل ليعبر عن عمق وتفاصيل السجلات والتاريخ البحري لـ ROPME */}
       <section className={`border-b ${themeMode === 'sepia' ? 'bg-[#e2dacb]/60 border-[#cbd4c5]' : 'bg-slate-900/60 border-slate-800'} py-8 px-4`}>
         <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
           <div className="flex flex-col items-center">
             <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-teal-500 bg-slate-950 text-teal-400 shadow-md'}`}>5</div>
-            <div className="text-xs font-bold">📜 الاتفاقيات والبروتوكولات القانونية</div>
-            <span className="text-[10px] text-slate-500 mt-0.5">موثقة ومعتمدة سحابياً</span>
+            <div className="text-xs font-bold">📜 معاهدات وبروتوكولات قانونية موثقة</div>
           </div>
           <div className="flex flex-col items-center">
             <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-cyan-500 bg-slate-950 text-cyan-400 shadow-md'}`}>4</div>
-            <div className="text-xs font-bold">🔬 الحملات والبعثات الميدانية</div>
-            <span className="text-[10px] text-slate-500 mt-0.5">مسوحات الأبحاث البحرية</span>
+            <div className="text-xs font-bold">🔬 حملات وبعثات مسح بحري ميداني</div>
           </div>
           <div className="flex flex-col items-center">
             <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-emerald-500 bg-slate-950 text-emerald-400 shadow-md'}`}>4</div>
-            <div className="text-xs font-bold">🏛️ المؤتمرات والقرارات الإدارية</div>
-            <span className="text-[10px] text-slate-500 mt-0.5">اجتماعات المجلس الوزاري الأعلى</span>
+            <div className="text-xs font-bold">🏛️ مؤتمرات وقرارات المجلس الإداري</div>
           </div>
           <div className="flex flex-col items-center">
             <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-amber-500 bg-slate-950 text-amber-400 shadow-md'}`}>13</div>
-            <div className="text-xs font-bold">📂 إجمالي السجلات والوثائق المحققة</div>
-            <span className="text-[10px] text-slate-500 mt-0.5">مستخلصة من الدليل الفني</span>
+            <div className="text-xs font-bold">📂 إجمالي وثائق وسجلات التفتيش</div>
           </div>
         </div>
       </section>
@@ -251,7 +217,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* عرض شبكة البوستر المصورة المحدثة بصور متطابقة من الأحداث التاريخية الفردية */}
+          {/* 3 عرض شبكة البوستر المصورة المحدثة بصور متطابقة ونظام الـ Modal لفتح تفاصيل الخبر عند النقر */}
           {viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {filteredEvents.map(event => (
@@ -275,7 +241,6 @@ export default function App() {
               ))}
             </div>
           ) : (
-            /* السرد الخطي التفاعلي المتسلسل للمقالات والأحداث التاريخية المعتمدة */
             <div className="relative border-r-2 mr-4 md:mr-8 pl-2 flex flex-col gap-6 border-emerald-900/20">
               {filteredEvents.map(event => (
                 <div key={event.id} className="relative pr-8">
@@ -296,7 +261,7 @@ export default function App() {
             </div>
           )}
 
-          {/* تصاعدي كرونولوجي لمعرض الصور التاريخي التوثيقي من القديم إلى الأحدث */}
+          {/* 4 معرض الصور التاريخي التوثيقي المرتب تصاعدياً من الأقدم للأحدث بالسنوات الموثقة */}
           <div className="pt-8 border-t border-emerald-900/10">
             <h2 className="text-base font-black mb-4 text-emerald-900 dark:text-amber-400">معرض الصور التاريخي والتوثيقي للمنظمة (الترتيب الكرونولوجي والتسلسلي)</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -315,9 +280,9 @@ export default function App() {
             </div>
           </div>
 
-          {/* لوحة الدول الأعضاء المحدثة بإسقاط أعلام الدول التعبيرية بدقة فائقة داخل دوائر هندسية موحدة */}
+          {/* 5 لوحة الدول الأعضاء الثماني مع أعلام الدول داخل الدوائر الهندسية المخصصة بدقة */}
           <div className="pt-8 border-t border-emerald-900/10">
-            <h2 className="text-base font-black mb-4 text-emerald-900 dark:text-amber-400">الدول الثماني الأعضاء الموقعة على ميثاق اتفاقية الكويت الإقليمية</h2>
+            <h2 className="text-base font-black mb-4 text-emerald-900 dark:text-amber-400">الدول الثماني الأعضاء الموقعة على ميثاق اتفاقية الكويت الإقليمية لعام 1978 م</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 text-center">
               {MEMBER_STATES.map(state => (
                 <div key={state.name} className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2 ${cardThemeClass}`}>
@@ -333,7 +298,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* النافذة المنبثقة التفاعلية الكبرى (Dynamic Event Detail Modal) */}
+      {/* النافذة المنبثقة التفاعلية الكبرى التابعة للبطاقات (Modal Box) */}
       {selectedEventModal && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className={`border rounded-3xl p-6 max-w-xl w-full shadow-2xl relative ${themeMode === 'sepia' ? 'bg-[#f5efe4] border-[#cbd4c5]' : 'bg-slate-900 border-slate-800 text-white'}`}>
@@ -343,7 +308,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2.5 mb-2">
               <span className="text-3xl font-mono font-black text-amber-600">{selectedEventModal.year} م</span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-800 text-white rounded">{selectedEventModal.icon} وثيقة محققة</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-800 text-white rounded">{selectedEventModal.icon} وثيقة معتمدة</span>
             </div>
             <h3 className="text-md font-black mb-3 border-b border-emerald-900/10 pb-2 text-slate-900 dark:text-white">{selectedEventModal.title}</h3>
             <p className="text-xs md:text-sm leading-relaxed text-justify opacity-90">{selectedEventModal.description}</p>
@@ -354,7 +319,6 @@ export default function App() {
         </div>
       )}
 
-      {/* تذييل المنصة والأبعاد التنظيمية والقانونية للأمانة العامة */}
       <footer className={`border-t px-4 py-6 text-center text-xs transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cbd4c5] bg-[#e2dacb]/40 text-[#1e3f20]' : 'border-slate-850 bg-slate-950 text-slate-400'}`}>
         <p className="font-black">حقوق الطبع والنشر © 2026 محفوظة للمنصة الإقليمية لحماية البيئة البحرية (ROPME)</p>
         <p className="text-[10px] mt-1">جميع البيانات والخرائط والصور مستخلصة ومحققة بالكامل من البوابة المرجعية والتقارير الفنية للأمانة العامة للدول الأعضاء.</p>
