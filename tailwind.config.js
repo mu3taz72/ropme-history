@@ -2,14 +2,10 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx,html}", // هنا يتم توجيه Tailwind لقراءة كافة ملفات المكونات
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Tajawal', 'sans-serif'],
-      },
-    },
+    extend: {},
   },
   plugins: [],
 }

@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* تخصيص وتنعيم شريط التمرير ليناسب الثيم البحري المظلم */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #020617;
-}
-::-webkit-scrollbar-thumb {
-  background: #0d9488;
-  border-radius: 3px;
+* {
+  font-family: 'Tajawal', sans-serif;
 }
