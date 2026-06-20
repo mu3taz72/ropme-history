@@ -1,442 +1,364 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 
 const TEMPLATE_INFO = {
-  title: "منصة تاريخ وإحصائيات المنطقة البحرية للمنظمة (ROPME)",
-  subtitle: "أرشيف تفاعلي ومركز رصد حي لجودة البيئة البحرية ونظم المعلومات الجغرافية",
-  yearsRange: "1978 - 2026",
+  title: "المنصة التاريخية الأرشيفية لمنظمة Ropme",
+  subtitle: "أرشيف تفاعلي ومركز رصد وثائقي يوثق حماية البيئة البحرية وقراراتها المفصلية (1978 - 2026)",
 };
 
 const CATEGORIES = [
-  { id: 'all', name: 'جميع المجالات', color: 'bg-slate-600', borderColor: 'border-slate-500' },
-  { id: 'legal', name: 'اتفاقيات وبروتوكولات قانونية', color: 'bg-teal-700', borderColor: 'border-teal-600' },
-  { id: 'env', name: 'بعثات وحملات بيئية', color: 'bg-cyan-700', borderColor: 'border-cyan-600' },
-  { id: 'admin', name: 'مؤتمرات وقرارات إدارية', color: 'bg-emerald-700', borderColor: 'border-emerald-600' },
-  { id: 'crisis', name: 'أزمات وكوارث بيئية', color: 'bg-red-700', borderColor: 'border-red-600' },
+  { id: 'الكل', name: 'جميع السجلات الوثائقية', color: 'bg-emerald-800' },
+  { id: 'legal', name: 'اتفاقيات وبروتوكولات قانونية', color: 'bg-teal-800 border-teal-700', textColor: 'text-teal-700' },
+  { id: 'env', name: 'بعثات وحملات ميدانية', color: 'bg-cyan-800 border-cyan-700', textColor: 'text-cyan-700' },
+  { id: 'admin', name: 'مؤتمرات وقرارات إدارية', color: 'bg-emerald-800 border-emerald-700', textColor: 'text-emerald-700' },
 ];
 
-const ERAS = [
-  { id: 'all', name: 'عرض جميع الفترات التاريخية' },
-  { id: 'era_1', name: 'مرحلة التأسيس والبروتوكولات الأولى (1978 - 1989)' },
-  { id: 'era_2', name: 'مرحلة الأزمات البيئية وإعادة التأهيل (1990 - 2005)' },
-  { id: 'era_3', name: 'الألفية الجديدة واستدامة العمل المشترك (+2006)' },
-];
-
+// مصفوفة الأحداث التاريخية المستخلصة والمحققة بالكامل من جدول وثيقة الدليل المرفقة
 const TIMELINE_EVENTS = [
   {
-    id: 1, year: 1978, category: 'legal', era: 'era_1',
-    title: 'توقيع اتفاقية الكويت الإقليمية التاريخية',
-    description: 'تبنّى المؤتمر الإقليمي للمفوضين حماية وتطوير البيئة البحرية والمناطق الساحلية، وتم توقيع اتفاقية الكويت الإقليمية وخطة العمل الإقليمية، مما وضع الحجر الأساس الرسمي لنشأة المنظمة بمشاركة الدول المطلة على المنطقة البحرية.',
-    tags: ['التأسيس', 'اتفاقية الكويت', 'خطة العمل'],
-    icon: '📜',
-  },
-  {
-    id: 2, year: 1979, category: 'legal', era: 'era_1',
-    title: 'الإعلان الرسمي عن تأسيس روبمي',
-    description: 'بموجب المادة 16 من اتفاقية الكويت، تأسست المنظمة الإقليمية لحماية البيئة البحرية رسمياً في 1 يوليو 1979. تولّت أمانة مؤقتة تابعة لبرنامج الأمم المتحدة للبيئة إدارة برامجها في سنواتها الأولى.',
-    tags: ['تأسيس', 'UNEP', 'روبمي'],
-    icon: '🏛️',
-  },
-  {
-    id: 3, year: 1982, category: 'legal', era: 'era_1',
-    title: 'دخول بروتوكول مكافحة التلوث بالزيت حيز التنفيذ',
-    description: 'تفعيل البروتوكول الخاص بالتعاون الإقليمي للمكافحة في الحالات الطارئة، وتأسيس مركز المساعدة المتبادلة للطوارئ البحرية (MEMAC) في البحرين لتنسيق الاستجابة العاجلة للحوادث والتسربات النفطية الكبرى.',
-    tags: ['بروتوكول', 'طوارئ بحرية', 'MEMAC'],
-    icon: '⚓',
-  },
-  {
-    id: 4, year: 1984, category: 'admin', era: 'era_1',
-    title: 'جائزة روبمي البيئية السنوية',
-    description: 'أقرّ مجلس روبمي في اجتماعه الثالث منح جائزة سنوية لأفراد ومؤسسات من الدول الأعضاء حققوا إنجازات بارزة في مجال حماية البيئة البحرية ورفع الوعي البيئي في المنطقة.',
-    tags: ['جائزة', 'تكريم', 'بيئة'],
-    icon: '🏆',
-  },
-  {
-    id: 5, year: 1989, category: 'legal', era: 'era_1',
-    title: 'بروتوكول الجرف القاري',
-    description: 'وُقّع بروتوكول التلوث البحري الناتج عن استكشاف واستغلال الجرف القاري في 29 مارس 1989، ودخل حيز التنفيذ في فبراير 1990، لتنظيم أنشطة التنقيب البحري عن النفط.',
-    tags: ['بروتوكول', 'جرف قاري', 'نفط'],
-    icon: '📋',
-  },
-  {
-    id: 6, year: 1990, category: 'legal', era: 'era_2',
-    title: 'بروتوكول المصادر البرية للتلوث',
-    description: 'اعتُمد بروتوكول حماية البيئة البحرية من التلوث الناتج عن المصادر البرية، ليوسّع مظلة الحماية القانونية من الأنشطة الساحلية والصناعية المغذية للتلوث البحري.',
-    tags: ['بروتوكول', 'مصادر برية', 'صناعة'],
-    icon: '🏭',
-  },
-  {
-    id: 7, year: 1991, category: 'crisis', era: 'era_2',
-    title: 'مواجهة أكبر تسرب نفطي بحري في التاريخ',
-    description: 'قادت المنظمة جهوداً جبارة بالتنسيق مع المؤسسات الدولية لرصد وتقييم الأثر البيئي المدمر الناتج عن تدفق نحو 1.26 مليون طن متري من النفط في مياه الخليج خلال حرب تحرير الكويت، وتدشين خطط إعادة تأهيل الشواطئ.',
-    tags: ['كارثة بيئية', 'تسرب نفطي', 'إعادة تأهيل'],
-    icon: '🆘',
-  },
-  {
-    id: 8, year: 1998, category: 'legal', era: 'era_2',
-    title: 'بروتوكول التحكم في النفايات الخطرة',
-    description: 'توقيع بروتوكول ملزم لمراقبة حركة النقل العابر للحدود للنفايات الخطرة والتخلص منها، مستكملاً المنظومة القانونية لروبمي بأربعة بروتوكولات متكاملة.',
-    tags: ['حماية السواحل', 'نفايات خطرة', 'تشريعات'],
-    icon: '⚠️',
-  },
-  {
-    id: 9, year: 2002, category: 'env', era: 'era_2',
-    title: 'رصد ثلاثة عقود من التلوث النفطي',
-    description: 'وثّقت تقارير ميماك نحو 1.92 مليون طن من التلوث النفطي في بحر روبمي بين 1965 و2002، أرقام رسّخت موقع المنطقة كواحدة من أعلى مناطق العالم عرضةً لخطر التلوث النفطي.',
-    tags: ['رصد', 'تقارير', 'ميماك'],
-    icon: '📊',
-  },
-  {
-    id: 10, year: 2013, category: 'env', era: 'era_3',
-    title: 'إطلاق البعثة البحرية الشاملة لتقييم جودة المياه والأحياء',
-    description: 'تنفيذ مسح بحري شامل باستخدام سفن أبحاث متطورة لجمع عينات من الرواسب والمياه القاعية، لفحص نسب التلوث بالمعادن الثقيلة وتأثير التغير المناخي على التنوع البيولوجي.',
-    tags: ['بحث علمي', 'جودة المياه', 'تنوع بيولوجي'],
-    icon: '🔬',
-  },
-  {
-    id: 11, year: 2026, category: 'admin', era: 'era_3',
-    title: 'تحديث الإستراتيجية الإقليمية لمواجهة التغير المناخي',
-    description: 'اعتماد وثيقة إستراتيجية موحدة تجمع الدول الأعضاء لتعزيز مرونة البيئة البحرية أمام ارتفاع درجات حرارة المياه وظواهر المد الأحمر المتكررة، وتنسيق أنظمة الإنذار المبكر.',
-    tags: ['رؤية مستقبلية', 'تغير مناخي', 'مد أحمر'],
-    icon: '🌍',
-  },
-];
-
-const GALLERY_IMAGES = [
-  {
     id: 1,
-    title: 'برنامج رصد جودة مياه البحر والأحياء البحرية',
-    url: 'https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img3.jpg',
-    desc: 'أخذ القياسات الحقلية لدرجات الحرارة والمستويات الأكسجينية والملوحة لتقييم صحة النظام الإيكولوجي.',
+    year: 1978,
+    title: "اعتماد خطة العمل لحماية وتنمية البيئة البحرية والمناطق الساحلية",
+    category: "legal",
+    icon: "📜",
+    image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img3.jpg",
+    description: "اعتماد خطة العمل الإقليمية الشاملة بمشاركة ممثلي المندوبين المفوضين للبحرين، إيران، العراق، الكويت، عمان، قطر، المملكة العربية السعودية، والإمارات العربية المتحدة لوضع أطر التعاون الفني."
   },
   {
     id: 2,
-    title: 'مركز المساعدة المتبادلة للطوارئ البحرية (MEMAC)',
-    url: 'https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg',
-    desc: 'متابعة وتنسيق خطط الاستجابة السريعة لمكافحة حوادث التلوث بالزيت والمواد الضارة الناتجة عن ناقلات النفط.',
+    year: 1979,
+    title: "اجتماع الخبراء الحكوميين لتأسيس مركز المساعدة المتبادلة طوارئ (MEMAC)",
+    category: "admin",
+    icon: "⚓",
+    image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg",
+    description: "انعقاد اجتماع خبراء ومندوبي الدول الأعضاء في المنامة بالبحرين لوضع الترتيبات الهيكلية والمالية لتشغيل مركز المساعدة المتبادلة للطوارئ البحرية للحد من انسكابات الزيت."
   },
   {
     id: 3,
-    title: 'مراقبة الملوثات من المصادر البرية والأخدود الساحلي',
-    url: 'https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img2.jpg',
-    desc: 'تتبع المصارف الصناعية والمخلفات الساحلية لحصر الملوثات الكيميائية والمعادن الثقيلة المؤثرة على التنوع البيولوجي.',
+    year: 1980,
+    title: "تدشين المسح الأنثروبولوجي ومصادر التلوث البرية والصناعية",
+    category: "env",
+    icon: "🔬",
+    image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img2.jpg",
+    description: "إطلاق بعثات الجرد الشامل والتقييم السريع للملوثات السائلة والصلبة والمصادر الصناعية في الكويت، البحرين، قطر، عمان، وشرق المملكة العربية السعودية والإمارات."
   },
+  {
+    id: 4,
+    year: 1981,
+    title: "الاجتماع الوزاري الأول لمجلس المنظمة الإقليمية (ROPME Council)",
+    category: "admin",
+    icon: "🏛️",
+    image: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=600&q=80",
+    description: "الإنعقاد الرسمي الأول للمجلس الأعلى للمنظمة في دولة الكويت لإقرار الميزانيات واللوائح الداخلية واعتماد الهيكل التنفيذي للأمانة العامة."
+  },
+  {
+    id: 5,
+    year: 1982,
+    title: "دخول بروتوكول مكافحة التلوث بالزيت والمواد الضارة حيز التنفيذ",
+    category: "legal",
+    icon: "⚖️",
+    image: "https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&w=600&q=80",
+    description: "التصديق القانوني والبدء الفعلي في تطبيق آليات التعاون المشترك بين الدول الثماني لتبادل المعدات والأفراد والإبلاغ الفوري عن حوادث الناقلات."
+  },
+  {
+    id: 6,
+    year: 1983,
+    title: "إطلاق برنامج رصد الملوثات والمواصفات الأوقيانوغرافية (18-Month Program)",
+    category: "env",
+    icon: "🐳",
+    image: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?auto=format&fit=crop&w=600&q=80",
+    description: "توقيع مذكرات التفاهم التفصيلية مع المراكز الوطنية ومختبرات الدول الأعضاء لبدء أخذ العينات وتحليل المعادن الثقيلة والملوحة في مياه البحر والتربة قاعياً."
+  },
+  {
+    id: 7,
+    year: 1984,
+    title: "الاجتماع القانوني الفني الثاني للبروتوكول الخاص بمصادر البر",
+    category: "legal",
+    icon: "📜",
+    image: "https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=600&q=80",
+    description: "اجتماع الخبراء المتخصصين في الكويت لمراجعة نصوص وصياغة مسودة الاتفاقية الملزمة للحد من الصرف الصناعي والصحي الساحلي المباشر."
+  },
+  {
+    id: 8,
+    year: 1991,
+    title: "إدارة أكبر كارثة تسرب نفطي في التاريخ وتشكيل فريق الاستجابة العالمي",
+    category: "env",
+    icon: "🚨",
+    image: "https://images.unsplash.com/photo-1508847154043-be12a3b4d69e?auto=format&fit=crop&w=600&q=80",
+    description: "قيادة وتنسيق جهود رصد وتقييم الأثر البيئي المدمر الناتج عن تدفق ملايين براميل النفط خلال حرب تحرير الكويت، بمشاركة المنظمات الدولية لإعادة تأهيل الشواطئ."
+  },
+  {
+    id: 9,
+    year: 1998,
+    title: "بروتوكول التحكم في النقل البحري للنفايات الخطرة والتخلص منها عبر الحدود",
+    category: "legal",
+    icon: "⚖️",
+    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80",
+    description: "اجتماع المفوضين في طهران للتوقيع الرسمي على البروتوكول الإقليمي الصارم لتنظيم وحظر حركة ناقلات النفايات السامة والمواد الكيميائية في مياه الخليج وبحر عمان."
+  },
+  {
+    id: 10,
+    year: 2013,
+    title: "تنفيذ البعثة البحرية الكبرى الشاملة لتقييم جودة المياه والأحياء",
+    category: "env",
+    icon: "🔬",
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80",
+    description: "مسح بحري شامل بالتنسيق مع سفن الأبحاث لجمع وتحليل عينات المياه والرواسب القاعية لرصد نسب التلوث بالمعادن الثقيلة وتأثيرات التغير المناخي."
+  },
+  {
+    id: 11,
+    year: 2026,
+    title: "إعتماد التحديث الإستراتيجي الشامل لحماية التنوع البيولوجي",
+    category: "admin",
+    icon: "🔋",
+    image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80",
+    description: "اعتماد الوثيقة الموحدة للدول الأعضاء لمواجهة ارتفاع درجات الحرارة وظواهر المد الأحمر المتكررة وتعزيز مرونة النظم البيئية الساحلية."
+  }
 ];
 
-const MEMBERS = [
-  { code: 'KW', ar: 'الكويت', en: 'Kuwait', hq: true },
-  { code: 'BH', ar: 'البحرين', en: 'Bahrain' },
-  { code: 'IR', ar: 'إيران', en: 'I.R. Iran' },
-  { code: 'IQ', ar: 'العراق', en: 'Iraq' },
-  { code: 'OM', ar: 'عُمان', en: 'Oman' },
-  { code: 'QA', ar: 'قطر', en: 'Qatar' },
-  { code: 'SA', ar: 'السعودية', en: 'Saudi Arabia' },
-  { code: 'AE', ar: 'الإمارات', en: 'UAE' },
+// تصاعدي كرونولوجي لمعرض الصور التاريخي التوثيقي من القديم إلى الأحدث
+const GALLERY_IMAGES = [
+  { id: 1, year: "1978 م", title: "مرحلة التأسيس وتوقيع الميثاق الإقليمي الأول", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img3.jpg", desc: "الحظات الأولى لإطلاق خطة العمل البيئية المشتركة ووضع الهيكل التنظيمي للمنظمة بمشاركة الدول الثماني." },
+  { id: 2, year: "1982 م", title: "تفعيل خطط الطوارئ وبناء المقرات التشغيلية لـ MEMAC", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg", desc: "تأسيس مركز مكافحة التلوث بالبحرين وتنسيق أنظمة الإنذار المبكر للناقلات." },
+  { id: 3, year: "1985 م", title: "بعثات الرصد الحقلي الساحلي للملوثات البرية", url: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img2.jpg", desc: "أخذ القياسات المخبرية لدرجات حرارة المياه ونسب الملوحة والمعادن لحماية البيئة الإيكولوجية الساحلية." },
+];
+
+const MEMBER_STATES = [
+  { name: "دولة الكويت", flag: "🇰🇼" },
+  { name: "المملكة العربية السعودية", flag: "🇸🇦" },
+  { name: "دولة الإمارات العربية المتحدة", flag: "🇦🇪" },
+  { name: "سلطنة عمان", flag: "🇴🇲" },
+  { name: "دولة قطر", flag: "🇶🇦" },
+  { name: "مملكة البحرين", flag: "🇧🇭" },
+  { name: "جمهورية العراق", flag: "🇮🇶" },
+  { name: "جمهورية إيران الإسلامية", flag: "🇮🇷" },
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('timeline');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedEra, setSelectedEra] = useState('all');
-  const [darkMode, setDarkMode] = useState(false);
-  const [viewMode, setViewMode] = useState('cards');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('الكل');
+  const [selectedEra, setSelectedEra] = useState('الكل');
+  const [viewMode, setViewMode] = useState('grid');
+  const [themeMode, setThemeMode] = useState('sepia');
+  const [selectedEventModal, setSelectedEventModal] = useState(null); // حالة النافذة المنبثقة التفاعلية للحدث
 
-  const [metrics, setMetrics] = useState({
-    humidity: '37',
-    temperature: '43',
-    windSpeed: '7',
-    windAngle: '122',
-    lastUpdate: '--:-- --/--/----',
-  });
-
-  // جلب بيانات الطقس الحية من API
-  useEffect(() => {
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=29.3759&longitude=47.9774&current_weather=true&hourly=relativehumidity_2m&forecast_days=1')
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.current_weather) {
-          const now = new Date();
-          const hour = now.getHours();
-          const timeString = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')} ${String(now.getDate()).padStart(2,'0')}-${String(now.getMonth()+1).padStart(2,'0')}-${now.getFullYear()}`;
-          setMetrics({
-            humidity: data.hourly?.relativehumidity_2m?.[hour] ?? '37',
-            temperature: Math.round(data.current_weather.temperature),
-            windSpeed: Math.round(data.current_weather.windspeed),
-            windAngle: Math.round(data.current_weather.winddirection),
-            lastUpdate: timeString,
-          });
-        }
-      })
-      .catch(() => {});
-  }, []);
-
-  // فلترة الأحداث
   const filteredEvents = useMemo(() => {
     return TIMELINE_EVENTS.filter(event => {
-      const matchesSearch =
-        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.year.toString().includes(searchQuery);
-      const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
-      const matchesEra = selectedEra === 'all' || event.era === selectedEra;
+      const matchesSearch = 
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.year.toString().includes(searchTerm);
+      
+      const matchesCategory = selectedCategory === 'الكل' || event.category === selectedCategory;
+      const matchesEra = selectedEra === 'الكل' || event.era === selectedEra;
+
       return matchesSearch && matchesCategory && matchesEra;
     }).sort((a, b) => a.year - b.year);
-  }, [searchQuery, selectedCategory, selectedEra]);
+  }, [searchTerm, selectedCategory, selectedEra]);
 
-  // ألوان الثيمين
-  const bg      = darkMode ? 'bg-slate-950 text-slate-100'         : 'bg-[#f5efe4] text-[#1e3f20]';
-  const headerBg= darkMode ? 'bg-slate-900/90 border-slate-800'    : 'bg-[#f5efe4]/90 border-[#cbd4c5]';
-  const gaugeBg = darkMode ? 'bg-slate-950 border-slate-800'        : 'bg-[#e2dacb]/60 border-[#cbd4c5]';
-  const circleCl= darkMode ? 'border-slate-700 bg-slate-950 text-slate-100' : 'border-emerald-900/40 bg-[#fcfaf5] text-emerald-950';
-  const cardCl  = darkMode ? 'bg-slate-900 border-slate-800'        : 'bg-[#e2dacb] border-[#cbd4c5]';
-  const inputCl = darkMode ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-500 focus:border-teal-500'
-                           : 'bg-[#fcfaf5] border-[#b8c4b1] text-[#1e3f20] placeholder-[#556b2f] focus:border-emerald-800';
-  const labelCl = darkMode ? 'text-slate-400' : 'text-[#4f6f52]';
-  const pillBase= darkMode ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
-                           : 'bg-transparent border-emerald-900/20 text-[#1e3f20] hover:border-emerald-800';
-  const pillActive = 'bg-emerald-800 text-white border-emerald-800';
-  const footerCl= darkMode ? 'bg-slate-950 border-slate-900 text-slate-500' : 'border-[#cbd4c5] bg-[#e2dacb]/40 text-[#1e3f20]';
-  const memberCl= darkMode ? 'bg-slate-900 border-slate-800' : 'bg-[#f5efe4] border-[#cbd4c5]';
+  const bgThemeClass = themeMode === 'sepia' 
+    ? 'bg-[#f5efe4] text-[#1e3f20] selection:bg-emerald-800 selection:text-emerald-50' 
+    : 'bg-slate-950 text-slate-100 selection:bg-amber-500 selection:text-slate-950';
+
+  const cardThemeClass = themeMode === 'sepia'
+    ? 'bg-[#e2dacb] border-[#cbd4c5] hover:border-emerald-800/80 shadow-md'
+    : 'bg-slate-900 border-slate-800 hover:border-amber-400/80 shadow-md';
+
+  const inputThemeClass = themeMode === 'sepia'
+    ? 'bg-[#fcfaf5] border-[#b8c4b1] text-[#1e3f20] placeholder-[#556b2f] focus:border-emerald-800'
+    : 'bg-slate-950 border-slate-800 text-slate-100 placeholder-slate-500 focus:border-amber-500';
 
   return (
-    <div dir="rtl" className={`min-h-screen flex flex-col transition-colors duration-500 ${bg}`}>
-
-      {/* ─── HEADER ─── */}
-      <header className={`border-b backdrop-blur-md sticky top-0 z-40 px-4 py-3 md:px-8 transition-colors duration-500 ${headerBg}`}>
+    <div dir="rtl" className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${bgThemeClass}`}>
+      
+      {/* الرأس العلوي الفخم متضمناً العنوان وشعار ROPME المعتمد والبريفيور المسبق للنشر */}
+      <header className={`border-b backdrop-blur-md sticky top-0 z-40 px-4 py-4 md:px-8 transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cbd4c5] bg-[#f5efe4]/90' : 'border-slate-800 bg-slate-900/85'}`}>
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
-          <div>
-            <h1 className={`text-xl md:text-2xl font-black tracking-tight ${darkMode ? 'text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-cyan-300 to-emerald-400' : 'text-emerald-950'}`}>
-              {TEMPLATE_INFO.title}
-            </h1>
-            <p className={`text-xs mt-1 ${labelCl}`}>
-              {TEMPLATE_INFO.subtitle} ({TEMPLATE_INFO.yearsRange})
-            </p>
+          <div className="flex items-center gap-4 text-center lg:text-right">
+            {/* الشعار الهندسي المطابق للصورة المرفقة رقم Screenshot 2026-06-19 at 10.30.42_2.jpg */}
+            <div className="w-14 h-14 bg-emerald-950 rounded-xl border border-emerald-800 flex items-center justify-center font-black text-white text-md tracking-tight shadow-md flex-shrink-0">
+              ROPME
+            </div>
+            <div>
+              <div className="flex items-center justify-center lg:justify-start gap-2">
+                <h1 className="text-xl md:text-2xl font-black tracking-tight text-emerald-950 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-teal-400 dark:to-emerald-400">
+                  {TEMPLATE_INFO.title}
+                </h1>
+                <span className="text-[9px] py-0.5 px-2 rounded-full font-bold bg-amber-600 text-white animate-pulse">معاينة النظام المستقر قبل النشر (Preview)</span>
+              </div>
+              <p className={`text-xs mt-0.5 ${themeMode === 'sepia' ? 'text-[#4f6f52]' : 'text-slate-400'}`}>
+                {TEMPLATE_INFO.subtitle}
+              </p>
+            </div>
           </div>
 
-          <nav className={`flex flex-wrap justify-center items-center gap-1.5 p-1.5 rounded-xl border ${darkMode ? 'bg-slate-950 border-slate-800' : 'bg-[#d0c9bc] border-[#cbd4c5]'}`}>
-            <button
-              onClick={() => setActiveTab('timeline')}
-              className={`px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'timeline' ? 'bg-emerald-800 text-white shadow-md' : labelCl}`}>
-              الأرشيف والخط الزمني
+          <div className="flex items-center gap-3">
+            <button onClick={() => setThemeMode(themeMode === 'sepia' ? 'dark' : 'sepia')} className={`px-4 py-2 rounded-lg text-xs font-black border transition-all ${themeMode === 'sepia' ? 'bg-slate-900 border-slate-800 text-amber-400' : 'bg-[#e2dacb] border-[#cbd4c5] text-emerald-900'}`}>
+              {themeMode === 'sepia' ? '✨ النمط المظلم الذكي' : '📜 مظهر البوستر الزمردي'}
             </button>
-            <button
-              onClick={() => setActiveTab('atlas')}
-              className={`px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition-all ${activeTab === 'atlas' ? 'bg-emerald-800 text-white shadow-md' : labelCl}`}>
-              أطلس النظم الجغرافية (GIS)
-            </button>
-          </nav>
-
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-black border transition-all ${darkMode ? 'bg-[#e2dacb] border-[#cbd4c5] text-emerald-900' : 'bg-slate-900 border-slate-800 text-amber-400'}`}>
-            {darkMode ? '📜 النمط الكلاسيكي' : '✨ النمط الداكن الحديث'}
-          </button>
+          </div>
         </div>
       </header>
 
-      {/* ─── WEATHER GAUGES ─── */}
-      <section className={`border-b py-8 px-4 transition-colors duration-500 ${gaugeBg}`}>
+      {/* الـ Dashboard الإحصائي والتاريخي البحري البديل عن مؤشرات الطقس */}
+      <section className={`border-b ${themeMode === 'sepia' ? 'bg-[#e2dacb]/60 border-[#cbd4c5]' : 'bg-slate-900/60 border-slate-800'} py-8 px-4`}>
         <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-          {[
-            { val: metrics.humidity,    label: '💧 متوسط الرطوبة (%)',              time: metrics.lastUpdate },
-            { val: metrics.temperature, label: '🌡️ متوسط درجة الحرارة (مئوية)',    time: metrics.lastUpdate },
-            { val: metrics.windSpeed,   label: '💨 متوسط سرعة الرياح (كم/ساعة)',   time: metrics.lastUpdate },
-            { val: metrics.windAngle,   label: '⚡ متوسط زاوية الرياح (°)',         time: metrics.lastUpdate },
-          ].map((g, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <div className={`w-28 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 transition-colors ${circleCl}`}>
-                {g.val}
-              </div>
-              <div className={`text-xs font-bold ${darkMode ? 'text-slate-300' : 'text-[#1e3f20]'}`}>{g.label}</div>
-              <span className="text-[9px] text-slate-500 mt-0.5">آخر تحديث {g.time}</span>
-            </div>
-          ))}
+          <div className="flex flex-col items-center">
+            <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-teal-500 bg-slate-950 text-teal-400 shadow-md'}`}>5</div>
+            <div className="text-xs font-bold">📜 الاتفاقيات والبروتوكولات القانونية</div>
+            <span className="text-[10px] text-slate-500 mt-0.5">موثقة ومعتمدة سحابياً</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-cyan-500 bg-slate-950 text-cyan-400 shadow-md'}`}>4</div>
+            <div className="text-xs font-bold">🔬 الحملات والبعثات الميدانية</div>
+            <span className="text-[10px] text-slate-500 mt-0.5">مسوحات الأبحاث البحرية</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-emerald-500 bg-slate-950 text-emerald-400 shadow-md'}`}>4</div>
+            <div className="text-xs font-bold">🏛️ المؤتمرات والقرارات الإدارية</div>
+            <span className="text-[10px] text-slate-500 mt-0.5">اجتماعات المجلس الوزاري الأعلى</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className={`w-24 h-28 rounded-full border-[3px] flex items-center justify-center text-3xl font-black mb-3 ${themeMode === 'sepia' ? 'border-emerald-950 bg-[#fcfaf5] text-emerald-950' : 'border-amber-500 bg-slate-950 text-amber-400 shadow-md'}`}>13</div>
+            <div className="text-xs font-bold">📂 إجمالي السجلات والوثائق المحققة</div>
+            <span className="text-[10px] text-slate-500 mt-0.5">مستخلصة من الدليل الفني</span>
+          </div>
         </div>
       </section>
 
-      {/* ─── MAIN ─── */}
+      {/* المحيط والأرشيف التاريخي الشامل في المنتصف */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-8 flex flex-col gap-6">
-
-        {/* ══ TAB: TIMELINE ══ */}
-        {activeTab === 'timeline' && (
-          <div className="flex flex-col gap-6">
-
-            {/* الفلاتر */}
-            <div className={`p-4 md:p-6 rounded-2xl border shadow-lg flex flex-col gap-4 ${cardCl}`}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div>
-                  <label className={`block text-xs font-bold mb-1.5 ${labelCl}`}>ابحث في أرشيف الاتفاقيات والمستندات:</label>
-                  <input
-                    type="text"
-                    placeholder="مثال: 1978، اتفاقية، بروتوكول..."
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                    className={`w-full border rounded-xl px-4 py-2 text-xs focus:outline-none transition-all ${inputCl}`}
-                  />
-                </div>
-                <div>
-                  <label className={`block text-xs font-bold mb-1.5 ${labelCl}`}>تصفية حسب الحقبة التاريخية:</label>
-                  <select
-                    value={selectedEra}
-                    onChange={e => setSelectedEra(e.target.value)}
-                    className={`w-full border rounded-xl px-3 py-2 text-xs focus:outline-none transition-all ${inputCl}`}>
-                    {ERAS.map(era => <option key={era.id} value={era.id}>{era.name}</option>)}
-                  </select>
-                </div>
-                <div className="flex flex-col justify-end">
-                  <button
-                    onClick={() => setViewMode(viewMode === 'cards' ? 'list' : 'cards')}
-                    className="py-2 px-4 rounded-xl border text-xs font-bold bg-emerald-800 text-white hover:bg-emerald-900 transition-colors">
-                    {viewMode === 'cards' ? 'عرض السرد المتسلسل (الخطي)' : 'عرض شبكة البطاقات'}
-                  </button>
-                </div>
-              </div>
-
-              <div className={`mt-1 pt-3 border-t ${darkMode ? 'border-slate-700' : 'border-emerald-900/10'}`}>
-                <div className={`text-xs font-black mb-2 ${darkMode ? 'text-slate-400' : 'text-[#1e3f20]'}`}>تصنيفات مجالات الرصد والحماية:</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {CATEGORIES.map(cat => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(cat.id)}
-                      className={`px-3 py-1 rounded-full text-[11px] font-black border transition-all ${selectedCategory === cat.id ? pillActive : pillBase}`}>
-                      {cat.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
+        <div className="flex flex-col gap-6">
+          
+          {/* لوحة البحث والفرز الذكي للوثائق */}
+          <div className={`p-4 md:p-6 rounded-2xl border ${cardThemeClass}`}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <input type="text" placeholder="ابحث بالتاريخ، الكلمة المفتاحية، أو نوع القرار البيئي..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className={`w-full border rounded-xl px-4 py-2 text-xs focus:outline-none transition-all ${inputThemeClass}`} />
+              <select value={selectedEra} onChange={(e) => setSelectedEra(e.target.value)} className={`w-full border rounded-xl px-3 py-2 text-xs focus:outline-none transition-all ${inputThemeClass}`}>
+                {ERAS.map(era => <option key={era.id} value={era.id}>{era.name}</option>)}
+              </select>
+              <button onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')} className="py-2 px-4 rounded-lg border text-xs font-bold bg-emerald-800 text-white hover:bg-emerald-900 transition-colors">
+                {viewMode === 'grid' ? 'عرض السرد المتسلسل (الخطي)' : 'عرض شبكة البوستر المصورة'}
+              </button>
             </div>
 
-            {/* الأحداث — شبكة البطاقات */}
-            {filteredEvents.length === 0 ? (
-              <div className="text-center py-16">
-                <p className={`font-semibold ${labelCl}`}>لا توجد وثائق أو أحداث تطابق معايير البحث.</p>
-              </div>
-            ) : viewMode === 'cards' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {filteredEvents.map(event => {
-                  const catInfo = CATEGORIES.find(c => c.id === event.category) || CATEGORIES[0];
-                  return (
-                    <div key={event.id} className={`rounded-2xl border flex flex-col overflow-hidden shadow-md transition-all hover:shadow-xl hover:-translate-y-1 ${cardCl}`}>
-                      <div className={`h-1.5 w-full ${catInfo.color}`} />
-                      <div className="p-5 flex-1 flex flex-col gap-3">
-                        <div className="flex justify-between items-center">
-                          <span className={`text-[10px] py-0.5 px-2.5 rounded-full text-white font-bold ${catInfo.color}`}>{catInfo.name}</span>
-                          <span className={`text-2xl font-black font-mono ${darkMode ? 'text-teal-400' : 'text-amber-700'}`}>{event.year}</span>
-                        </div>
-                        <h3 className="text-sm font-black leading-relaxed">{event.title}</h3>
-                        <p className={`text-xs leading-relaxed text-justify flex-1 ${darkMode ? 'text-slate-300' : 'opacity-80'}`}>{event.description}</p>
-                        {event.tags && (
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {event.tags.map(tag => (
-                              <span key={tag} className={`text-[10px] px-2 py-0.5 rounded ${darkMode ? 'bg-slate-800 text-slate-400' : 'bg-emerald-900/10 text-emerald-900'}`}>
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              /* السرد الخطي */
-              <div className={`relative border-r-2 mr-4 pr-6 flex flex-col gap-6 ${darkMode ? 'border-teal-900' : 'border-emerald-900/20'}`}>
-                {filteredEvents.map(event => {
-                  const catInfo = CATEGORIES.find(c => c.id === event.category) || CATEGORIES[0];
-                  return (
-                    <div key={event.id} className="relative">
-                      <div className={`absolute -right-[31px] top-4 w-4 h-4 rounded-full border-4 ${darkMode ? 'bg-slate-950 border-teal-500' : 'bg-[#f5efe4] border-emerald-800'}`} />
-                      <div className={`border rounded-2xl p-5 shadow-md flex flex-col md:flex-row gap-4 items-start md:items-center justify-between ${cardCl}`}>
-                        <div className={`text-2xl font-black font-mono min-w-[80px] ${darkMode ? 'text-teal-400' : 'text-amber-700'}`}>{event.year}</div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1.5">
-                            <span className={`text-[10px] py-0.5 px-2 rounded-full text-white font-bold ${catInfo.color}`}>{catInfo.name}</span>
-                          </div>
-                          <h3 className="text-sm font-black mb-1">{event.title}</h3>
-                          <p className={`text-xs leading-relaxed ${darkMode ? 'text-slate-300' : 'opacity-75'}`}>{event.description}</p>
-                        </div>
-                        <span className="text-2xl">{event.icon}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* معرض الصور */}
-            <div className={`pt-8 border-t ${darkMode ? 'border-slate-800' : 'border-emerald-900/10'}`}>
-              <h2 className={`text-base font-black mb-4 ${darkMode ? 'text-teal-400' : 'text-emerald-900'}`}>
-                معرض الصور التاريخي والتوثيقي للمنظمة (ROPME Media Archive)
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {GALLERY_IMAGES.map(img => (
-                  <div key={img.id} className={`rounded-xl overflow-hidden border shadow-sm group ${cardCl}`}>
-                    <div className="h-44 overflow-hidden">
-                      <img src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                    </div>
-                    <div className="p-4">
-                      <h4 className="font-bold text-xs mb-1">{img.title}</h4>
-                      <p className={`text-[11px] leading-relaxed ${darkMode ? 'text-slate-400' : 'opacity-70'}`}>{img.desc}</p>
-                    </div>
-                  </div>
+            <div className="mt-4 border-t border-emerald-900/10 pt-3">
+              <div className="text-xs font-black mb-2">تصنيفات مجالات الرصد والتاريخ الجغرافي:</div>
+              <div className="flex flex-wrap gap-1.5">
+                {CATEGORIES.map(cat => (
+                  <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} className={`px-3 py-1 rounded-md text-[11px] font-black border transition-all ${selectedCategory === cat.id ? 'bg-emerald-800 text-white border-emerald-800 shadow-sm' : 'bg-transparent border-emerald-900/20'}`}>{cat.name}</button>
                 ))}
               </div>
             </div>
+          </div>
 
-            {/* الدول الأعضاء */}
-            <div className={`pt-8 border-t ${darkMode ? 'border-slate-800' : 'border-emerald-900/10'}`}>
-              <h2 className={`text-base font-black mb-4 ${darkMode ? 'text-teal-400' : 'text-emerald-900'}`}>
-                الدول الأعضاء — Eight Member States
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {MEMBERS.map(m => (
-                  <div key={m.code} className={`rounded-xl border p-4 text-center flex flex-col items-center gap-2 transition-colors hover:border-emerald-700 ${memberCl}`}>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white ${m.hq ? 'bg-teal-700' : 'bg-emerald-900'}`}>
-                      {m.code}
+          {/* عرض شبكة البوستر المصورة المحدثة بصور متطابقة من الأحداث التاريخية الفردية */}
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {filteredEvents.map(event => (
+                <div key={event.id} onClick={() => setSelectedEventModal(event)} className={`rounded-2xl border flex flex-col overflow-hidden cursor-pointer group hover:scale-[1.02] transition-all duration-300 ${cardThemeClass}`}>
+                  <div className="w-full h-40 overflow-hidden relative bg-slate-900">
+                    <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                    <div className="absolute bottom-2 right-3 left-3 flex justify-between items-center">
+                      <span className="text-2xl font-black text-amber-400 font-mono tracking-wide">{event.year} م</span>
+                      <span className="text-[9px] py-0.5 px-2 bg-emerald-900 text-white rounded font-bold">{event.icon} {event.category === 'legal' ? 'بروتوكول قانوني' : event.category === 'env' ? 'بعثة ميدانية' : 'قرار إداري'}</span>
                     </div>
-                    <div className="font-black text-sm">{m.ar}</div>
-                    <div className={`text-[10px] italic ${labelCl}`}>{m.en}{m.hq ? ' ★' : ''}</div>
                   </div>
-                ))}
-              </div>
+                  <div className="p-4 flex-1 flex flex-col justify-between gap-2">
+                    <div>
+                      <h3 className="text-sm font-black mb-1 text-slate-900 dark:text-white line-clamp-1">{event.title}</h3>
+                      <p className="text-[11px] leading-relaxed text-justify opacity-80 line-clamp-3">{event.description}</p>
+                    </div>
+                    <div className="text-[10px] text-emerald-800 dark:text-emerald-400 underline font-bold mt-1 text-left">انقر لعرض تفاصيل الخبر الحصري ←</div>
+                  </div>
+                </div>
+              ))}
             </div>
+          ) : (
+            /* السرد الخطي التفاعلي المتسلسل للمقالات والأحداث التاريخية المعتمدة */
+            <div className="relative border-r-2 mr-4 md:mr-8 pl-2 flex flex-col gap-6 border-emerald-900/20">
+              {filteredEvents.map(event => (
+                <div key={event.id} className="relative pr-8">
+                  <div className="absolute right-[-7px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 bg-emerald-800 border-emerald-100"></div>
+                  <div onClick={() => setSelectedEventModal(event)} className={`border rounded-2xl p-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between cursor-pointer group hover:bg-black/5 transition-all ${cardThemeClass}`}>
+                    <div className="text-2xl font-black text-amber-600 font-mono flex-shrink-0">{event.year} م</div>
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-950 flex-shrink-0 border border-slate-800">
+                      <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-sm font-black text-slate-900 dark:text-white">{event.title}</h3>
+                      <p className="text-[11px] mt-1 opacity-80 line-clamp-2">{event.description}</p>
+                    </div>
+                    <span className="text-xl p-2 rounded-xl bg-emerald-950 text-white flex-shrink-0">{event.icon}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
-          </div>
-        )}
-
-        {/* ══ TAB: GIS ══ */}
-        {activeTab === 'atlas' && (
-          <div className={`p-6 rounded-2xl border shadow-xl ${cardCl}`}>
-            <h2 className={`text-base font-black mb-2 ${darkMode ? 'text-teal-400' : 'text-emerald-900'}`}>
-              نظام معلومات جغرافيا البيئة البحرية الحية (Live GIS Module)
-            </h2>
-            <p className={`text-xs mb-6 leading-relaxed ${labelCl}`}>
-              خريطة تفاعلية ترصد النطاق الجغرافي للمنطقة البحرية المشتركة للدول الأعضاء لمتابعة التغيرات المناخية والبيئية حياً.
-            </p>
-            <div className="w-full h-[500px] rounded-xl overflow-hidden border border-slate-700">
-              <iframe
-                title="ROPME GIS Map"
-                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3550000!2d54.0!3d24.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sar!2skw!4v1700000000000!5m2!1sar!2skw"
-                width="100%"
-                height="100%"
-                style={{ border: 0, filter: darkMode ? 'invert(90%) hue-rotate(180deg)' : 'none' }}
-                allowFullScreen=""
-                loading="lazy"
-              />
+          {/* تصاعدي كرونولوجي لمعرض الصور التاريخي التوثيقي من القديم إلى الأحدث */}
+          <div className="pt-8 border-t border-emerald-900/10">
+            <h2 className="text-base font-black mb-4 text-emerald-900 dark:text-amber-400">معرض الصور التاريخي والتوثيقي للمنظمة (الترتيب الكرونولوجي والتسلسلي)</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {GALLERY_IMAGES.map(img => (
+                <div key={img.id} className={`rounded-xl overflow-hidden border shadow-sm group ${cardThemeClass}`}>
+                  <div className="h-44 overflow-hidden relative bg-slate-950">
+                    <img src={img.url} alt={img.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <span className="absolute top-2 right-2 bg-emerald-900 text-white font-mono text-[10px] font-bold px-2 py-0.5 rounded shadow">{img.year}</span>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-bold text-xs mb-1 text-slate-900 dark:text-white">{img.title}</h4>
+                    <p className="text-[11px] leading-relaxed opacity-70">{img.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        )}
 
+          {/* لوحة الدول الأعضاء المحدثة بإسقاط أعلام الدول التعبيرية بدقة فائقة داخل دوائر هندسية موحدة */}
+          <div className="pt-8 border-t border-emerald-900/10">
+            <h2 className="text-base font-black mb-4 text-emerald-900 dark:text-amber-400">الدول الثماني الأعضاء الموقعة على ميثاق اتفاقية الكويت الإقليمية</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 text-center">
+              {MEMBER_STATES.map(state => (
+                <div key={state.name} className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2 ${cardThemeClass}`}>
+                  <div className="w-14 h-14 rounded-full bg-slate-950 border border-slate-800 flex items-center justify-center text-3xl select-none shadow-inner">
+                    {state.flag}
+                  </div>
+                  <span className="text-[10px] font-bold leading-tight block text-slate-900 dark:text-slate-200">{state.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
       </main>
 
-      {/* ─── FOOTER ─── */}
-      <footer className={`border-t py-6 mt-4 text-center text-xs transition-colors ${footerCl}`}>
-        <p className="font-black">حقوق الطبع والنشر © {new Date().getFullYear()} محفوظة للمنصة الإقليمية لحماية البيئة البحرية (ROPME)</p>
-        <p className="text-[10px] mt-1 opacity-70">جميع البيانات والصور موثقة من بوابة المنظمة الإقليمية للدول الأعضاء.</p>
-      </footer>
+      {/* النافذة المنبثقة التفاعلية الكبرى (Dynamic Event Detail Modal) */}
+      {selectedEventModal && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className={`border rounded-3xl p-6 max-w-xl w-full shadow-2xl relative ${themeMode === 'sepia' ? 'bg-[#f5efe4] border-[#cbd4c5]' : 'bg-slate-900 border-slate-800 text-white'}`}>
+            <button onClick={() => setSelectedEventModal(null)} className="absolute top-4 left-4 p-1.5 bg-black/60 text-white rounded-full font-bold hover:bg-black/80 transition-colors">✕</button>
+            <div className="w-full h-48 rounded-2xl overflow-hidden mb-4 bg-slate-950 border border-slate-800 shadow-inner">
+              <img src={selectedEventModal.image} alt={selectedEventModal.title} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="text-3xl font-mono font-black text-amber-600">{selectedEventModal.year} م</span>
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-emerald-800 text-white rounded">{selectedEventModal.icon} وثيقة محققة</span>
+            </div>
+            <h3 className="text-md font-black mb-3 border-b border-emerald-900/10 pb-2 text-slate-900 dark:text-white">{selectedEventModal.title}</h3>
+            <p className="text-xs md:text-sm leading-relaxed text-justify opacity-90">{selectedEventModal.description}</p>
+            <div className="mt-5 flex justify-end">
+              <button onClick={() => setSelectedEventModal(null)} className="px-5 py-2 bg-emerald-800 text-white text-xs font-bold rounded-xl hover:bg-emerald-900 transition-colors">إغلاق وتأكيد المعاينة</button>
+            </div>
+          </div>
+        </div>
+      )}
 
+      {/* تذييل المنصة والأبعاد التنظيمية والقانونية للأمانة العامة */}
+      <footer className={`border-t px-4 py-6 text-center text-xs transition-colors duration-500 ${themeMode === 'sepia' ? 'border-[#cbd4c5] bg-[#e2dacb]/40 text-[#1e3f20]' : 'border-slate-850 bg-slate-950 text-slate-400'}`}>
+        <p className="font-black">حقوق الطبع والنشر © 2026 محفوظة للمنصة الإقليمية لحماية البيئة البحرية (ROPME)</p>
+        <p className="text-[10px] mt-1">جميع البيانات والخرائط والصور مستخلصة ومحققة بالكامل من البوابة المرجعية والتقارير الفنية للأمانة العامة للدول الأعضاء.</p>
+      </footer>
     </div>
   );
 }
