@@ -5,7 +5,6 @@ const SITE_INFO = {
   subtitle: "أرشيف تفاعلي ومركز رصد وثائقي يوثق حماية البيئة البحرية وقراراتها المفصلية (1978 - 2025)",
 };
 
-// الفئات الأرشيفية المعتمدة
 const CATEGORIES = [
   { id: 'الكل', name: 'جميع السجلات', color: '#0D8C9E' },
   { id: 'legal', name: 'اتفاقيات وبروتوكولات', color: '#0A6878' },
@@ -16,7 +15,6 @@ const CATEGORIES = [
 // توليد مصفوفة السنوات من 1978 إلى 2025 بشكل متسلسل ودقيق دون حذف أي عام
 const YEARS_LIST = Array.from({ length: 2025 - 1978 + 1 }, (_, i) => String(1978 + i));
 
-// السجلات والأنشطة التاريخية موزعة على الحزم الكرونولوجية دون إسقاط أي عام
 const ARCHIVE_DATA = {
   "1978": {
     image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img3.jpg",
@@ -29,11 +27,12 @@ const ARCHIVE_DATA = {
   },
   "1979": {
     image: "https://dev.ropme-wp.giscon-development.com/wp-content/uploads/2023/06/slider-img1.jpg",
-    stats: { pdf: 2, word: 2, cds: 0, videos: 0 },
+    stats: { pdf: 4, word: 2, cds: 0, videos: 0 },
     activities: [
       { id: "1979-1", title: "اجتماع الخبراء الحكوميين بشأن المشاريع التعاونية لخطة العمل", type: "اجتماع فني", typeKey: "admin", docType: "Hard Copy / تقرير", desc: "Meeting of Government Experts on Co-operative Projects of the Kuwait Action Plan. عُقد في دولة الكويت من 19-22 نوفمبر 1979 م." },
       { id: "1979-2", title: "اجتماع الخبراء لإنشاء مركز المساعدة المتبادلة للطوارئ البحرية (MEMAC)", type: "تقرير تأسيسي", typeKey: "admin", docType: "تقرير رسمي", desc: "Meeting of Experts on the Establishment of the Marine Emergency Mutual Aid Centre (MEMAC) عُقد في البحرين 2-5 ديسمبر 1979 م لوضع النظم الأساسية." },
-      { id: "1979-3", title: "زيارة وفد شركة NKK اليابانية ومناقشة مراكز الاستقبال العائمة", type: "زيارة ميدانية", typeKey: "env", docType: "تقرير فني", desc: "شرح مواصفات مراكز الاستقبال الطافحة والعائمة المصممة من قبل الفنيين لحماية الموانئ الساحلية من مخلفات ناقلات النفط." }
+      { id: "1979-3", title: "زيارة وفد شركة NKK اليابانية ومناقشة مراكز الاستقبال العائمة", type: "زيارة ميدانية", typeKey: "env", docType: "تقرير فني", desc: "شرح مواصفات مراكز الاستقبال الطافحة والعائمة المصممة من قبل الفنيين لحماية الموانئ الساحلية من مخلفات ناقلات النفط." },
+      { id: "1979-4", title: "زيارة وفد الوكالة الكندية للبيئة واستعراض أنظمة الحاسب الآلي للإدارة", type: "زيارة ميدانية", typeKey: "env", docType: "تقرير فني", desc: "قام غوردن بيدلند من الوكالة الكندية للبيئة بزيارة لمطابقة آليات الربط البرمجي والاطلاع على أنظمة الحاسب الإلكتروني المخصصة لإدارة ومراقبة جودة مياه البحار." }
     ]
   },
   "1980": {
@@ -107,16 +106,15 @@ export default function App() {
     });
   }, [activeYearData, searchTerm, selectedCategory]);
 
-  // إعدادات الـ Sepia الحقيقية المتناسقة مع الصور (Cream / Tonal Sepia) لمنع الشاشة السوداء
-  const bgTheme = darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#f8f1e5] text-[#3e2723]';
-  const cardTheme = darkMode ? 'bg-slate-900 border-slate-800' : 'bg-[#f1e6d2] border-[#dac9ad]';
-  const inputTheme = darkMode ? 'bg-slate-950 border-slate-800 text-white' : 'bg-[#fcf8f0] border-[#cfbe9f] text-[#3e2723]';
+  const bgThemeClass = darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#f8f1e5] text-[#3e2723]';
+  const cardThemeClass = darkMode ? 'bg-slate-900 border-slate-800' : 'bg-[#f1e6d2] border-[#dac9ad] shadow-xs';
+  const inputThemeClass = darkMode ? 'bg-slate-950 border-slate-800 text-white' : 'bg-[#fcf8f0] border-[#cfbe9f] text-[#3e2723]';
 
   return (
-    <div dir="rtl" className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${bgTheme}`}>
+    <div dir="rtl" className={`min-h-screen flex flex-col font-sans transition-colors duration-500 ${bgThemeClass}`}>
       
       {/* 1. الهيدر التراثي المعتمد */}
-      <header className={`border-b px-4 py-4 md:px-8 shadow-xs ${darkMode ? 'border-slate-800 bg-slate-900/90' : 'border-[#cfbe9f] bg-[#f8f1e5]/90'}`}>
+      <header className={`border-b sticky top-0 z-40 px-4 py-4 md:px-8 shadow-xs ${darkMode ? 'border-slate-800 bg-slate-900/90 backdrop-blur-md' : 'border-[#cfbe9f] bg-[#f8f1e5]/90 backdrop-blur-md'}`}>
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-[#8b4513] text-white font-black flex items-center justify-center text-sm rounded-xl shadow-md flex-shrink-0">
